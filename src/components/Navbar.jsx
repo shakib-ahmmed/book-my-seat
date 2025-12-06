@@ -24,9 +24,9 @@ const Navbar = () => {
 
 
                 <div className="navbar-start flex items-center gap-2">
-                    <NavLink to="/" className="flex items-center gap-2">
-                        <img className="h-10 w-10" src="/logo.png" alt="BOOKMYSEAT" />
-                        <span className="font-bold text-2xl sm:text-3xl lg:text-4xl text-[#075a12]">
+                    <NavLink to="/" className="flex items-center justify-center gap-2">
+                        <img className="h-20 w-20" src="/logo.png" alt="BOOKMYSEAT" />
+                        <span className="font-bold text-2xl sm:text-3xl lg:text-4xl text-[#800f0f]">
                             BOOKMYSEAT
                         </span>
                     </NavLink>
@@ -46,8 +46,9 @@ const Navbar = () => {
                         </label>
                         <ul
                             tabIndex={0}
-                            className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
-                        >
+                            className="menu menu-sm dropdown-content text-2xl sm:text-3xl lg:text-4xl text-black mt-3 p-2 shadow bg-base-100 rounded-box w-52" >
+
+
                             <li><NavLink to="/">Home</NavLink></li>
                             {user && <li><NavLink to="/tickets">All Tickets</NavLink></li>}
                             {user && <li><NavLink to="/dashboard">Dashboard</NavLink></li>}
@@ -96,7 +97,7 @@ const Navbar = () => {
                                     <li>
                                         <button
                                             onClick={handleLogOut}
-                                            className="w-full text-left px-4 py-2 hover:bg-[#075a12] text-gray-800 hover:text-gray-100"
+                                            className="w-full text-left px-4 py-2 hover:bg-[#800f0f]text-gray-800 hover:text-gray-100"
                                         >
                                             Logout
                                         </button>
@@ -108,7 +109,7 @@ const Navbar = () => {
                         <div className="flex gap-2">
                             <Link
                                 to="/auth/login"
-                                className="btn bg-[#075a12] text-white font-semibold w-[120px] h-[40px] hover:scale-105 transition flex items-center justify-center"
+                                className="btn bg-[#800f0f] text-white font-semibold w-[120px] h-[40px] hover:scale-105 transition flex items-center justify-center"
                             >
                                 Login
                             </Link>
