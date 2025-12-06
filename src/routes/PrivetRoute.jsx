@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useContext } from "react";
-import { AuthContext } from "../Provider/AuthProvider.jsx";
+import { AuthContext } from "../provider/AuthProvider.jsx";
 import { Loader } from "lucide-react";
 
 export default function PrivetRoute() {

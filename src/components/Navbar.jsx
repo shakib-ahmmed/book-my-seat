@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { NavLink, Link } from "react-router-dom";
-import { AuthContext } from "../Provider/AuthProvider.jsx";
+import { AuthContext } from "../provider/AuthProvider.jsx";
 import { UserIcon, Bus } from "lucide-react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -109,7 +109,7 @@ const Navbar = () => {
                         <div className="flex gap-2">
                             <Link
                                 to="/auth/login"
-                                className="btn bg-[#800f0f] text-white font-semibold w-[120px] h-[40px] hover:scale-105 transition flex items-center justify-center"
+                                className="btn bg-[#660103] text-white font-semibold w-[120px] h-[40px] hover:scale-105 transition flex items-center justify-center"
                             >
                                 Login
                             </Link>

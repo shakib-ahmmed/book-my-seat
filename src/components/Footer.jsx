@@ -4,7 +4,7 @@ import { Bus } from "lucide-react";
 
 const Footer = () => {
     return (
-        <footer className="bg-[#1d0404f1] text-white pt-10">
+        <footer className="bg-[#240c0b] text-white pt-10">
             <div className="max-w-7x1 mx-auto px-6 lg:px-20">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
 

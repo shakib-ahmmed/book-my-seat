@@ -2,13 +2,14 @@ import { createBrowserRouter } from "react-router-dom";
 import MainLayout from "../Layouts/MainLayout.jsx";
 import AuthLayout from "../Layouts/AuthLayout.jsx";
 import PrivetRoute from "./PrivetRoute.jsx"
-import Home from "../Pages/Home.jsx";
-import AllTickets from "../Pages/AllTickets.jsx";
-import MyTickets from "../Pages/MyTickets.jsx";
-import Dashboard from "../Pages/Dashboard.jsx";
+import Home from "../pages/Home.jsx";
+import AllTickets from "../pages/AllTickets.jsx";
+import MyTickets from "../pages/MyTickets.jsx";
+import Dashboard from "../pages/Dashboard.jsx";
 import { LogIn } from "lucide-react";
-import ErrorPage from "../Pages/ErrorPage.jsx";
-import Register from "../Pages/Register.jsx";
+import ErrorPage from "../pages/ErrorPage.jsx";
+import Register from "../pages/Register.jsx";
+import Login from "../Pages/Login.jsx";
 
 
 
@@ -53,7 +54,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "login",
-        element: <LogIn />
+        element: <Login />
       },
       {
         path: "registration",
