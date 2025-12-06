@@ -3,7 +3,7 @@ import React from 'react'
 const AuthContext = () => {
     return (
         <div>
-            adsadsdgit a
+            <h1>AuthContext</h1>
         </div>
     )
 }
