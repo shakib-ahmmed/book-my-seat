@@ -1,10 +1,18 @@
 import React from 'react';
 import Navbar from '../components/Navbar';
+import HeroSection from '../components/HeroSection.jsx';
+import AdvertisementSection from '../components/AdvertisementSection.jsx';
+
 
 const Home = () => {
     return (
         <div>
-            <h1>home</h1>
+            <div>
+                <HeroSection />
+            </div>
+            <div>
+                <AdvertisementSection />
+            </div>
         </div>
     );
 };
