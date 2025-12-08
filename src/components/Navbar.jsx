@@ -52,7 +52,7 @@ const Navbar = () => {
 
                             <li><NavLink to="/">Home</NavLink></li>
                             {user && <li><NavLink to="/tickets">All Tickets</NavLink></li>}
-                            {user && <li><NavLink to="/dashboard">Dashboard</NavLink></li>}
+
                             {!user && <li><NavLink to="/auth/login">Login</NavLink></li>}
                             {!user && <li><NavLink to="/auth/registration">Register</NavLink></li>}
                         </ul>
@@ -64,7 +64,6 @@ const Navbar = () => {
                     <ul className="menu menu-horizontal px-1 font-semibold">
                         <li><NavLink to="/">Home</NavLink></li>
                         {user && <li><NavLink to="/tickets">All Tickets</NavLink></li>}
-                        {user && <li><NavLink to="/dashboard">Dashboard</NavLink></li>}
                     </ul>
                 </div>
 
@@ -87,18 +86,29 @@ const Navbar = () => {
                             {dropdownOpen && (
                                 <ul className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg overflow-hidden z-50">
                                     <li>
+
                                         <NavLink
                                             to="/my-tickets"
-                                            className="block px-4 py-2 hover:bg-gray-100"
+                                            className="block px-4 py-2 hover:bg-[#f2d73c]"
                                             onClick={() => setDropdownOpen(false)}
                                         >
                                             My Profile
+
                                         </NavLink>
+                                        <li>
+                                            <NavLink
+                                                to="/dashboard"
+                                                className="block px-4 py-2 hover:bg-[#f2d73c]"
+                                                onClick={() => setDropdownOpen(false)}
+                                            >
+                                                Dashboard
+                                            </NavLink>
+                                        </li>
                                     </li>
                                     <li>
                                         <button
                                             onClick={handleLogOut}
-                                            className="w-full text-left px-4 py-2 hover:bg-[#800f0f]text-gray-800 hover:text-gray-100"
+                                            className="w-full text-left px-4 py-2 hover:bg-[#800f0f]text-gray-800 hover:bg-[#f2d73c]"
                                         >
                                             Logout
                                         </button>

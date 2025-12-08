@@ -1,5 +1,4 @@
 import React from 'react';
-import Navbar from '../components/Navbar';
 import HeroSection from '../components/HeroSection.jsx';
 import AdvertisementSection from '../components/AdvertisementSection.jsx';
 

@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
-import Navbar from "../components/Navbar";
 import Footer from "../Components/Footer";
+import Navbar from "../components/Navbar";
 
 
 
@@ -10,7 +10,7 @@ export default function AuthLayout() {
             <header>
                 <Navbar />
             </header>
-            <main className="flex-1">
+            <main className="flex-1 flex-col min-h-screen">
                 <Outlet />
             </main>
             <footer>

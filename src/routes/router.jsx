@@ -6,10 +6,10 @@ import Home from "../pages/Home.jsx";
 import AllTickets from "../pages/AllTickets.jsx";
 import MyTickets from "../pages/MyTickets.jsx";
 import Dashboard from "../pages/Dashboard.jsx";
-import { LogIn } from "lucide-react";
 import ErrorPage from "../pages/ErrorPage.jsx";
 import Register from "../pages/Register.jsx";
 import Login from "../Pages/Login.jsx";
+import DashboardLayout from "../pages/Dashboard.jsx";
 
 
 
@@ -59,6 +59,22 @@ const router = createBrowserRouter([
       {
         path: "registration",
         element: <Register />
+      }
+    ]
+  },
+  {
+    path: '/dashboard',
+    element: [
+      <PrivetRoute>
+        <DashboardLayout />
+      </PrivetRoute>
+    ],
+    children: [
+      {
+        index: true,
+        element: {
+
+        }
       }
     ]
   },
