@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
-import { AuthContext } from "../Provider/AuthProvider";
+import { AuthContext } from "../provider/AuthContext";
 import { toast } from "react-toastify";
 
 const TicketDetails = () => {

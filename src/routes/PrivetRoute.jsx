@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useContext } from "react";
-import { AuthContext } from "../provider/AuthProvider.jsx";
+import { AuthContext } from "../provider/AuthContext";
 import { Loader } from "lucide-react";
 import Navbar from '../components/Navbar';
 import Footer from "../Components/Footer.jsx";
