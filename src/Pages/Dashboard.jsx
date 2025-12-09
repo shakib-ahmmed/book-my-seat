@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
 
-const DashboardLayout = () => {
-    const [sidebarOpen, setSidebarOpen] = useState(true);
+const Dashboard = () => {
+    const [sidebarOpen] = useState(true);
 
     return (
         <div className="flex flex-col min-h-screen">
-        
+
 
             <div className="flex flex-1">
                 {/* Sidebar */}
@@ -57,4 +55,4 @@ const DashboardLayout = () => {
     );
 };
 
-export default DashboardLayout;
+export default Dashboard;

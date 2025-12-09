@@ -53,7 +53,7 @@ const Navbar = () => {
 
 
                             <li><NavLink to="/">Home</NavLink></li>
-                            {user && <li><NavLink to="/tickets">All Tickets</NavLink></li>}
+                            {user && <li><NavLink to="/all-tickets">All Tickets</NavLink></li>}
 
                             {!user && <li><NavLink to="/auth/login">Login</NavLink></li>}
                             {!user && <li><NavLink to="/auth/registration">Register</NavLink></li>}
@@ -65,7 +65,7 @@ const Navbar = () => {
                 <div className="navbar-center hidden lg:flex">
                     <ul className="menu menu-horizontal px-1 font-semibold">
                         <li><NavLink to="/">Home</NavLink></li>
-                        {user && <li><NavLink to="/tickets">All Tickets</NavLink></li>}
+                        {user && <li><NavLink to="/all-tickets">All Tickets</NavLink></li>}
                     </ul>
                 </div>
 

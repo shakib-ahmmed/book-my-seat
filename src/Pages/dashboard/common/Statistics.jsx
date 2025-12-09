@@ -1,12 +1,17 @@
-import React from 'react';
-import AdminStatistics from '../../../components/dashboard/statistics/AdminStatistics';
 
+import LoadingSpinner from '../../../components/LoadingSpinner'
+import useRole from '../../../hooks/useRole'
 const Statistics = () => {
+    const [role, isRoleLoading] = useRole()
+    if (isRoleLoading) return <LoadingSpinner />
     return (
         <div>
-            <AdminStatistics/>
+            {role === 'customer' && <CustomerStatistics />}
+            {role === 'seller' && <SellerStatistics />}
+            {role === 'admin' && <AdminStatistics />}
         </div>
-    );
-};
+    )
+}
+
 
 export default Statistics;

@@ -4,13 +4,17 @@ import AuthLayout from "../Layouts/AuthLayout.jsx";
 import PrivetRoute from "./PrivetRoute.jsx";
 
 import Home from "../pages/Home.jsx";
-import AllTickets from "../pages/AllTickets.jsx";
 import ErrorPage from "../pages/ErrorPage.jsx";
 import Register from "../pages/Register.jsx";
 import Login from "../pages/Login.jsx";
 import DashboardLayout from "../layouts/DashboardLayout.jsx";
-import TicketDetails from "../pages/TicketDetails.jsx";
+
 import Statistics from "../pages/dashboard/common/Statistics.jsx";
+import VendorRoute from "./VendorRoute.jsx";
+import AddTickets from "../pages/dashboard/vendor/AddTickets.jsx";
+import AllTickets from "../pages/AllTickets.jsx";
+import AdminRoute from "./AdminRoute.jsx";
+import Dashboard from "../pages/Dashboard.jsx";
 
 
 
@@ -27,9 +31,10 @@ const router = createBrowserRouter([
         element: <Home />
       },
       {
-        path: "tickets/:id",
-        element: <TicketDetails />
+        path: "all-tickets",
+        element: <AllTickets />
       },
+
     ],
   },
 
@@ -61,7 +66,7 @@ const router = createBrowserRouter([
     ],
   },
 
-  // DASHBOARD (PRIVATE)
+  // DASHBOARD 
   {
     path: "/dashboard",
     element: (
@@ -73,13 +78,32 @@ const router = createBrowserRouter([
       {
         index: true,
         element: (
+
           <PrivetRoute>
             <Statistics />
           </PrivetRoute>
+
         )
       },
       {
+        path: "add-tickets",
+        element: (
+          <PrivetRoute>
+            <VendorRoute>
+              <AddTickets />
+            </VendorRoute>
+          </PrivetRoute>
+        ),
+      },
+      {
+        path: "manage-user",
+        element: (
+          <PrivetRoute>
+            <AdminRoute>
 
+            </AdminRoute>
+          </PrivetRoute>
+        )
       },
     ],
   },

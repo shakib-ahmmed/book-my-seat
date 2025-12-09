@@ -1,27 +1,14 @@
-import { Navigate, Outlet } from "react-router-dom";
-import { useContext } from "react";
-import { AuthContext } from "../provider/AuthContext";
-import { Loader } from "lucide-react";
-import Navbar from '../components/Navbar';
-import Footer from "../Components/Footer.jsx";
+import useAuth from '../hooks/useAuth'
+import { Navigate, useLocation } from 'react-router'
+import LoadingSpinner from '../components/LoadingSpinner'
 
+const PrivateRoute = ({ children }) => {
+    const { user, loading } = useAuth()
+    const location = useLocation()
 
-export default function PrivetRoute() {
-    const { user, loading } = useContext(AuthContext);
-
-    if (loading) {
-        return <Loader />;
-    }
-
-    return user ? (
-        <div className="flex flex-col min-h-screen">
-            <Navbar />
-            <main className="flex-1">
-                <Outlet />
-            </main>
-            <Footer />
-        </div>
-    ) : (
-        <Navigate to="/auth/login" replace />
-    );
+    if (loading) return <LoadingSpinner />
+    if (user) return children
+    return <Navigate to='/login' state={location.pathname} replace='true' />
 }
+
+export default PrivateRoute;

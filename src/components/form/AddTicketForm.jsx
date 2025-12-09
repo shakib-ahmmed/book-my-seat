@@ -3,7 +3,9 @@ import { toast } from "react-toastify";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-// Validation Schema
+
+
+
 const schema = yup.object({
     title: yup.string().required("Title is required"),
     image: yup.string().url("Invalid image URL").required("Image is required"),

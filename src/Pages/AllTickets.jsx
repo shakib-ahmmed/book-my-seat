@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 function AllTickets() {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
-  const type = params.get("type"); // "bus", "train", "launch", "plane"
+  const type = params.get("type"); 
 
   return (
     <div>
