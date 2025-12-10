@@ -16,7 +16,7 @@ const slides = [
         route: "Dhaka → Sylhet",
         price: "675 BDT",
         icon: <Train className="w-8 h-8" />,
-        
+
     },
     {
         type: "Plane",

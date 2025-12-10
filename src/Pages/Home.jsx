@@ -1,6 +1,6 @@
 import React from 'react';
-import HeroSection from '../components/HeroSection.jsx';
-import AdvertisementSection from '../components/AdvertisementSection.jsx';
+import HeroSection from '../components/Home/HeroSection';
+
 
 
 const Home = () => {
@@ -10,7 +10,7 @@ const Home = () => {
                 <HeroSection />
             </div>
             <div>
-                <AdvertisementSection />
+
             </div>
         </div>
     );
