@@ -15,6 +15,8 @@ import AddTickets from "../pages/dashboard/vendor/AddTickets.jsx";
 import AllTickets from "../pages/AllTickets.jsx";
 import AdminRoute from "./AdminRoute.jsx";
 import Dashboard from "../pages/Dashboard.jsx";
+import ManageUsers from "../pages/dashboard/admin/ManageUsers.jsx";
+import PrivateRoute from "./PrivetRoute.jsx";
 
 
 
@@ -76,16 +78,6 @@ const router = createBrowserRouter([
     ),
     children: [
       {
-        index: true,
-        element: (
-
-          <PrivetRoute>
-            <Statistics />
-          </PrivetRoute>
-
-        )
-      },
-      {
         path: "add-tickets",
         element: (
           <PrivetRoute>
@@ -96,15 +88,16 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "manage-user",
+        path: 'manage-users',
         element: (
-          <PrivetRoute>
+          <PrivateRoute>
             <AdminRoute>
-
+              <ManageUsers />
             </AdminRoute>
-          </PrivetRoute>
-        )
+          </PrivateRoute>
+        ),
       },
+
     ],
   },
 

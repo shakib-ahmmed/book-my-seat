@@ -4,10 +4,13 @@ import { BsFillCartPlusFill, BsFillHouseDoorFill } from 'react-icons/bs'
 const AdminStatistics = () => {
     return (
         <div>
+
+
+
             <div className='mt-12'>
-                {/* small cards */}
+
+
                 <div className='mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grow'>
-                    {/* Sales Card */}
                     <div className='relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md'>
                         <div
                             className={`bg-clip-border mx-4 rounded-xl overflow-hidden bg-linear-to-tr shadow-lg absolute -mt-4 grid h-16 w-16 place-items-center from-orange-600 to-orange-400 text-white shadow-orange-500/40`}
@@ -23,7 +26,6 @@ const AdminStatistics = () => {
                             </h4>
                         </div>
                     </div>
-                    {/* Total Orders */}
                     <div className='relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md'>
                         <div
                             className={`bg-clip-border mx-4 rounded-xl overflow-hidden bg-linear-to-tr shadow-lg absolute -mt-4 grid h-16 w-16 place-items-center from-blue-600 to-blue-400 text-white shadow-blue-500/40`}
@@ -39,7 +41,6 @@ const AdminStatistics = () => {
                             </h4>
                         </div>
                     </div>
-                    {/* Total Plants */}
                     <div className='relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md'>
                         <div
                             className={`bg-clip-border mx-4 rounded-xl overflow-hidden bg-linear-to-tr shadow-lg absolute -mt-4 grid h-16 w-16 place-items-center from-pink-600 to-pink-400 text-white shadow-pink-500/40`}
@@ -74,13 +75,9 @@ const AdminStatistics = () => {
                 </div>
 
                 <div className='mb-4 grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3'>
-                    {/*Sales Bar Chart */}
                     <div className='relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md overflow-hidden xl:col-span-2'>
-                        {/* Chart goes here.. */}
                     </div>
-                    {/* Calender */}
                     <div className=' relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md overflow-hidden'>
-                        {/* Calender */}
                     </div>
                 </div>
             </div>

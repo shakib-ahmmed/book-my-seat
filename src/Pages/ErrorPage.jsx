@@ -18,7 +18,7 @@ const ErrorPage = () => {
             </p>
             <Link
                 to="/"
-                className="bg-[#e8d44e] hover:bg-[#fddb1a] text-[#260d0d] font-semibold w-[160px] h-[50px] rounded-lg flex items-center justify-center hover:scale-105 transition-transform duration-200"
+                className="btn bg-[#660103] text-white font-semibold w-[120px] h-[40px] hover:scale-105 transition flex items-center justify-center"
             >
                 Go Home
             </Link>

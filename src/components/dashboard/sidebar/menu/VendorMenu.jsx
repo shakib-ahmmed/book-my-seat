@@ -8,8 +8,8 @@ const VendorMenu = () => {
         <>
             <MenuItem
                 icon={BsFillHouseAddFill}
-                label='Add Plant'
-                address='add-plant'
+                label='Add Ticket'
+                address='add-Ticlket'
             />
             <MenuItem icon={MdHomeWork} label='My Inventory' address='my-inventory' />
             <MenuItem
