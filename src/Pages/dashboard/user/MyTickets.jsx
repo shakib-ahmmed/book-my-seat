@@ -1,116 +1,84 @@
-import { Calendar, MapPin, Ticket, Bus, Plane, Train, ArrowRight } from "lucide-react";
+import { useQuery } from '@tanstack/react-query';
+import TicketDataRow from '../../../components/Dashboard/TableRows/TicketDataRow';
+import useAuth from '../../../hooks/useAuth';
+import useAxiosSecure from '../../../hooks/useAxiosSecure';
+import LoadingSpinner from '../../../components/Shared/LoadingSpinner';
 
 const MyTickets = () => {
-  // Example ticket data (replace with API data)
-  const myTickets = [
-    {
-      id: "TCK-98342",
-      title: "Dhaka to Chittagong",
-      from: "Dhaka",
-      to: "Chittagong",
-      transport: "Bus",
-      date: "2025-01-23",
-      time: "10:30 AM",
-      price: 850,
-      qty: 2,
-      perks: ["AC Coach", "Water Bottle", "WiFi"],
-    },
-    {
-      id: "TCK-44720",
-      title: "Dhaka to Cox's Bazar",
-      from: "Dhaka",
-      to: "Cox's Bazar",
-      transport: "Plane",
-      date: "2025-02-12",
-      time: "07:45 AM",
-      price: 4800,
-      qty: 1,
-      perks: ["Window Seat", "Luggage 20kg"],
-    },
-  ];
+  const { user } = useAuth();
+  const axiosSecure = useAxiosSecure();
 
-  const getTransportIcon = (type) => {
-    switch (type) {
-      case "Bus":
-        return <Bus className="w-5 h-5 text-indigo-600" />;
-      case "Plane":
-        return <Plane className="w-5 h-5 text-indigo-600" />;
-      case "Train":
-        return <Train className="w-5 h-5 text-indigo-600" />;
-      default:
-        return <Ticket className="w-5 h-5 text-indigo-600" />;
-    }
-  };
+  const {
+    data: tickets = [],
+    isLoading,
+    refetch,
+  } = useQuery({
+    queryKey: ['myTickets', user?.email],
+    queryFn: async () => {
+      const res = await axiosSecure(`/my-tickets`);
+      return res.data;
+    },
+  });
+
+  if (isLoading) return <LoadingSpinner />;
 
   return (
-    <div className="w-full">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">My Tickets</h1>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {myTickets.map((ticket) => (
-          <div
-            key={ticket.id}
-            className="bg-white shadow-lg rounded-xl p-5 border hover:shadow-2xl transition"
-          >
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold text-indigo-700">
-                {ticket.title}
-              </h2>
-              <span className="text-xs bg-indigo-100 text-indigo-600 px-2 py-1 rounded-full">
-                {ticket.transport}
-              </span>
-            </div>
-
-            {/* Locations */}
-            <div className="flex items-center gap-2 text-gray-700 mb-2">
-              <MapPin className="w-4 h-4 text-indigo-600" />
-              <p className="font-medium">
-                {ticket.from} <ArrowRight className="inline w-4 h-4" /> {ticket.to}
-              </p>
-            </div>
-
-            {/* Date & Time */}
-            <div className="flex items-center gap-3 mt-3 text-gray-600">
-              <Calendar className="w-4 h-4 text-indigo-600" />
-              <p>
-                {ticket.date} – <span className="font-medium">{ticket.time}</span>
-              </p>
-            </div>
-
-            {/* Perks */}
-            <div className="mt-4 flex flex-wrap gap-2">
-              {ticket.perks.map((perk, index) => (
-                <span
-                  key={index}
-                  className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full"
-                >
-                  {perk}
-                </span>
-              ))}
-            </div>
-
-            {/* Price & Quantity */}
-            <div className="flex justify-between items-center mt-5 border-t pt-4">
-              <div>
-                <p className="text-sm text-gray-500">Price</p>
-                <p className="text-xl font-bold text-gray-800">
-                  ৳{ticket.price}
-                </p>
-              </div>
-              <div className="text-right">
-                <p className="text-sm text-gray-500">Tickets</p>
-                <p className="text-xl font-semibold text-indigo-600">
-                  {ticket.qty}
-                </p>
-              </div>
-            </div>
-
-            {/* See Details Button */}
-            <button className="w-full mt-5 bg-indigo-600 hover:bg-indigo-800 text-white py-2 rounded-lg transition">
-              See Details
-            </button>
+    <div className="container mx-auto px-4 sm:px-8">
+      <div className="py-8">
+        <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+          My Tickets
+        </h2>
+        <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 overflow-x-auto">
+          <div className="inline-block min-w-full shadow-lg rounded-lg overflow-hidden">
+            <table className="min-w-full leading-normal">
+              <thead>
+                <tr className="bg-gray-100 border-b border-gray-200">
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">
+                    Image
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">
+                    Ticket Name
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">
+                    From
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">
+                    To
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">
+                    Price
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">
+                    Quantity
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">
+                    Action
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white">
+                {tickets.length > 0 ? (
+                  tickets.map(ticket => (
+                    <TicketDataRow
+                      key={ticket._id}
+                      ticket={ticket}
+                      refetch={refetch}
+                    />
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={8} className="px-6 py-4 text-center text-gray-500">
+                      You have no tickets yet.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
-        ))}
+        </div>
       </div>
     </div>
   );
