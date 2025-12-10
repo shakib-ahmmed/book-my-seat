@@ -1,5 +1,6 @@
 import { FaUserCog, FaUserTag } from 'react-icons/fa'
-import MenuItem from './MenuItem'
+import MenuItem from './MenuItem';
+
 
 const AdminMenu = () => {
     return (
