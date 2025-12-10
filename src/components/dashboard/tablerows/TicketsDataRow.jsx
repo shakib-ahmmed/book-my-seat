@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import DeleteModal from '../../Modal/DeleteModal';
-import UpdateTicketModal from '../../Modal/UpdateTicketModal';
+import DeleteModal from '../../model/DeleteModal';
+import UpdateTicketModal from '../../model/UpdateTicketModel';
+
 
 const TicketDataRow = ({ ticket }) => {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);

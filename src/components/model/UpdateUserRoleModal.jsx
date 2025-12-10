@@ -51,7 +51,7 @@ const UpdateUserRoleModal = ({ isOpen, closeModal, user, refetch }) => {
                             onChange={e => setUpdatedRole(e.target.value)}
                             className="w-full my-3 px-4 py-2 rounded-xl border-2 border-[#ba0c10] text-[#260d0d] font-medium focus:outline-none focus:ring-2 focus:ring-[#fddb1a]"
                         >
-                            <option value="customer">Customer</option>
+                            <option value="customer">User</option>
                             <option value="seller">Vendor</option>
                             <option value="admin">Admin</option>
                         </select>

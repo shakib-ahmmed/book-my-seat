@@ -17,6 +17,11 @@ import AdminRoute from "./AdminRoute.jsx";
 import Dashboard from "../pages/Dashboard.jsx";
 import ManageUsers from "../pages/dashboard/admin/ManageUsers.jsx";
 import PrivateRoute from "./PrivetRoute.jsx";
+import RevenueOverview from "../pages/dashboard/vendor/RevenueOverview.jsx";
+import VendorRequests from "../pages/dashboard/admin/VendorRequests.jsx";
+import Profile from "../pages/dashboard/common/Profile.jsx";
+import MyTickets from "../pages/dashboard/user/MyTickets.jsx";
+import MyAddedTickets from "../pages/dashboard/vendor/MyAddedTickets.jsx";
 
 
 
@@ -78,11 +83,39 @@ const router = createBrowserRouter([
     ),
     children: [
       {
+        index: true,
+        element: (
+          <PrivateRoute>
+            <Statistics />
+          </PrivateRoute>
+        ),
+      },
+      {
         path: "add-tickets",
         element: (
           <PrivetRoute>
             <VendorRoute>
               <AddTickets />
+            </VendorRoute>
+          </PrivetRoute>
+        ),
+      },
+      {
+        path: "my-added-tickets",
+        element: (
+          <PrivetRoute>
+            <VendorRoute>
+              <MyAddedTickets />
+            </VendorRoute>
+          </PrivetRoute>
+        ),
+      },
+      {
+        path: 'revenue-overview',
+        element: (
+          <PrivetRoute>
+            <VendorRoute>
+              <RevenueOverview />
             </VendorRoute>
           </PrivetRoute>
         ),
@@ -97,7 +130,32 @@ const router = createBrowserRouter([
           </PrivateRoute>
         ),
       },
-
+      {
+        path: 'Vendor-Request',
+        element: (
+          <PrivateRoute>
+            <AdminRoute>
+              <VendorRequests />
+            </AdminRoute>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: 'Profile',
+        element: (
+          <PrivateRoute>
+            <Profile />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: 'my-tickets',
+        element: (
+          <PrivateRoute>
+            <MyTickets />
+          </PrivateRoute>
+        ),
+      },
     ],
   },
 

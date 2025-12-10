@@ -9,7 +9,7 @@ import { AuthContext } from "../provider/AuthContext";
 
 
 const Navbar = () => {
-    const { user, logOut } = useContext(AuthContext);
+    const { user, logOut, loading } = useContext(AuthContext);
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
     const handleLogOut = () => {
@@ -20,7 +20,7 @@ const Navbar = () => {
             })
             .catch((err) => toast.error(err.message));
     };
-
+    if (loading) return null;
     return (
         <div>
             <div className="navbar bg-base-100 shadow-sm lg:px-20">
@@ -90,7 +90,7 @@ const Navbar = () => {
                                     <li>
 
                                         <NavLink
-                                            to="/my-tickets"
+                                            to="/dashboard/profile"
                                             className="block px-4 py-2 hover:bg-[#f2d73c]"
                                             onClick={() => setDropdownOpen(false)}
                                         >

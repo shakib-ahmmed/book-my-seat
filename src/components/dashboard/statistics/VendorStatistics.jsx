@@ -1,5 +1,5 @@
 const VendorStatistics = () => {
-    return <div>Seller Statistics Page</div>
+    return <div>Ticket Vendor Statistics Page</div>
 }
 
 export default VendorStatistics;

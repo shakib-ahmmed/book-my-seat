@@ -1,7 +1,8 @@
 import { useState } from "react";
-import DeleteModal from "../../Modal/DeleteModal";
+import DeleteModal from "../../model/DeleteModal";
 
-const VendorDataRow = ({ data, type, onStatusChange, onDelete }) => {
+
+const VendorOrderDataRow = ({ data, type, onStatusChange, onDelete }) => {
     const [isOpen, setIsOpen] = useState(false);
     const closeModal = () => setIsOpen(false);
 
@@ -75,4 +76,4 @@ const VendorDataRow = ({ data, type, onStatusChange, onDelete }) => {
     );
 };
 
-export default VendorDataRow;
+export default VendorOrderDataRow;

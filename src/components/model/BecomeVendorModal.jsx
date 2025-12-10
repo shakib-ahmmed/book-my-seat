@@ -46,14 +46,14 @@ const BecomeVendorModal = ({ isOpen, closeModal }) => {
                     <div className="flex justify-around mt-4">
                         <button
                             onClick={handleRequest}
-                            className="bg-[#fddb1a] text-[#260d0d] px-5 py-2 rounded-lg font-semibold hover:bg-[#cac483] transition"
+                            className="btn bg-[#18351b] text-white font-semibold w-[120px] h-[40px] hover:scale-105 transition flex items-center justify-center"
                         >
                             Continue
                         </button>
 
                         <button
                             onClick={closeModal}
-                            className="bg-[#ba0c10] text-[#e8d44e] px-5 py-2 rounded-lg font-semibold hover:bg-[#7e0304] transition"
+                            className="btn bg-[#660103] text-white font-semibold w-[120px] h-[40px] hover:scale-105 transition flex items-center justify-center"
                         >
                             Cancel
                         </button>

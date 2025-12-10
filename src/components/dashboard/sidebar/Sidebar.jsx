@@ -10,7 +10,6 @@ import { FcSettings } from 'react-icons/fc'
 import { AiOutlineBars } from 'react-icons/ai'
 import { BsGraphUp } from 'react-icons/bs'
 
-// Components
 import LoadingSpinner from '../../LoadingSpinner'
 import MenuItem from './menu/MenuItem'
 import UserMenu from './menu/UserMenu'
@@ -22,79 +21,91 @@ const Sidebar = () => {
     const [isActive, setActive] = useState(false)
     const [role, isRoleLoading] = useRole()
 
-    const handleToggle = () => {
-        setActive(!isActive)
-    }
+    const handleToggle = () => setActive(!isActive)
 
     if (isRoleLoading) return <LoadingSpinner />
 
     return (
         <>
             {/* Small Screen Navbar */}
-            <div className='bg-gray-100 text-gray-800 flex justify-between md:hidden'>
-                <div>
-                    <div className='block cursor-pointer p-4 font-bold'>
-                        <Link to='/'>
-                            <img src={logo} alt='logo' width='100' height='100' />
-                        </Link>
-                    </div>
+            <div className="bg-white text-[#3d1816] flex justify-between md:hidden shadow-md">
+                <div className="cursor-pointer p-4">
+                    <Link to="/">
+                        <img src={logo} alt="logo" width="90" height="90" />
+                    </Link>
                 </div>
 
                 <button
                     onClick={handleToggle}
-                    className='mobile-menu-button p-4 focus:outline-none focus:bg-gray-200'
+                    className="mobile-menu-button p-4 focus:outline-none"
                 >
-                    <AiOutlineBars className='h-5 w-5' />
+                    <AiOutlineBars className="h-6 w-6 text-[#3d1816] " />
                 </button>
             </div>
 
             {/* Sidebar */}
             <div
-                className={`z-10 md:fixed flex flex-col justify-between overflow-x-hidden bg-gray-100 w-64 space-y-6 px-2 py-4 absolute inset-y-0 left-0 transform ${isActive && '-translate-x-full'
-                    } md:translate-x-0 transition duration-200 ease-in-out`}
+                className={`z-10 md:fixed flex flex-col justify-between overflow-hidden 
+                bg-white text-[#3d1816]
+                w-64 space-y-6 px-4 py-6 shadow-xl
+                absolute inset-y-0 left-0 transform
+                ${isActive ? "-translate-x-full" : "md:translate-x-0"}
+                transition-all duration-300 ease-in-out`}
             >
-                <div className='flex flex-col h-full'>
-                    {/* Logo */}
-                    <div>
-                        <div className='w-full hidden md:flex px-4 py-2 shadow-lg rounded-lg justify-center items-center bg-lime-100 mx-auto'>
-                            <Link to='/'>
-                                <img src={logo} alt='logo' width='100' height='100' />
+                <div className="flex flex-col h-full">
+
+                    {/* Logo Box */}
+                    <div className="hidden md:flex justify-center mb-8">
+                        <div className="bg-[#341311] p-3 rounded-xl shadow-md">
+                            <Link to="/">
+                                <img
+                                    src={logo}
+                                    alt="logo"
+                                    width="110"
+                                    className="rounded-lg"
+                                />
                             </Link>
                         </div>
                     </div>
 
-                    {/* Middle Menu */}
-                    <div className='flex flex-col justify-between flex-1 mt-6'>
-                        <nav>
-                            <MenuItem
-                                icon={BsGraphUp}
-                                label='Statistics'
-                                address='/dashboard'
-                            />
+                    {/* Menu */}
+                    <div className="flex flex-col flex-1 space-y-2">
 
-                            {/* Role-Based Menu */}
-                            {role === 'customer' && <UserMenu />}
-                            {role === 'seller' && <VendorMenu />}
-                            {role === 'admin' && <AdminMenu />}
-                        </nav>
+                        {/* Dashboard */}
+                        <MenuItem
+                            icon={BsGraphUp}
+                            label="Statistics"
+                            address="/dashboard"
+                            className="hover:bg-[#4d1d1a] transition rounded-lg"
+                        />
+
+                        {/* Role-Based Menus */}
+                        {role === "customer" && <UserMenu />}
+                        {role === "seller" && <VendorMenu />}
+                        {role === "admin" && <AdminMenu />}
                     </div>
 
                     {/* Bottom Menu */}
-                    <div>
-                        <hr />
+                    <div className="mt-4">
+                        <hr className="border-[#5e2824]" />
 
+                        {/* Profile */}
                         <MenuItem
                             icon={FcSettings}
-                            label='Profile'
-                            address='/dashboard/profile'
+                            label="Profile"
+                            address="/dashboard/profile"
+                            className="hover:bg-[#4d1d1a] rounded-lg"
                         />
 
+                        {/* Logout Button */}
                         <button
                             onClick={logOut}
-                            className='flex cursor-pointer w-full items-center px-4 py-2 mt-5 text-gray-600 hover:bg-gray-300 hover:text-gray-700 transition-colors duration-300 transform'
+                            className="flex items-center w-full px-4 py-3 mt-3 
+                            text-[#3d1816]  bg-white hover:bg-[#5e2824] hover:text-white  rounded-lg 
+                            transition duration-300 shadow-sm"
                         >
-                            <GrLogout className='w-5 h-5' />
-                            <span className='mx-4 font-medium'>Logout</span>
+                            <GrLogout className="w-5 h-5" />
+                            <span className="ml-3 font-medium">Logout</span>
                         </button>
                     </div>
                 </div>
@@ -103,4 +114,4 @@ const Sidebar = () => {
     )
 }
 
-export default Sidebar
+export default Sidebar;

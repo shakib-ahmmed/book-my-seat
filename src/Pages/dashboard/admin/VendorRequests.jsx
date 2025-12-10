@@ -1,8 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
-import VendorRequestDataRow from '../../../components/Dashboard/TableRows/VendorRequestDataRow';
+
 import useAuth from '../../../hooks/useAuth';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import LoadingSpinner from '../../../components/LoadingSpinner';
+import VendorRequestDataRow from '../../../components/dashboard/tablerows/VendorRequestDataRow.';
 
 const VendorRequests = () => {
   const { user } = useAuth();

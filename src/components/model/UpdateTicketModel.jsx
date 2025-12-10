@@ -37,4 +37,4 @@ const UpdateTicketModal = ({ setIsEditModalOpen, isOpen }) => {
     )
 }
 
-export default UpdateTicketModal
+export default UpdateTicketModal;

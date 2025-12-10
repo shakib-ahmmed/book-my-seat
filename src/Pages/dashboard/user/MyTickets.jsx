@@ -1,24 +1,26 @@
 import { useQuery } from '@tanstack/react-query';
-import TicketDataRow from '../../../components/Dashboard/TableRows/TicketDataRow';
 import useAuth from '../../../hooks/useAuth';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
-import LoadingSpinner from '../../../components/Shared/LoadingSpinner';
+import LoadingSpinner from '../../../components/LoadingSpinner';
+import TicketDataRow from '../../../components/dashboard/tablerows/TicketsDataRow';
 
 const MyTickets = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
 
-  const {
-    data: tickets = [],
-    isLoading,
-    refetch,
-  } = useQuery({
+  const { data, isLoading, refetch } = useQuery({
     queryKey: ['myTickets', user?.email],
     queryFn: async () => {
       const res = await axiosSecure(`/my-tickets`);
-      return res.data;
+      console.log('Backend response:', res.data);
+
+      if (Array.isArray(res.data)) return res.data;
+      if (res.data?.tickets && Array.isArray(res.data.tickets)) return res.data.tickets;
+      return []; 
     },
   });
+
+  const tickets = data || []; 
 
   if (isLoading) return <LoadingSpinner />;
 

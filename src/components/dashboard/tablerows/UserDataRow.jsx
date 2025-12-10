@@ -2,7 +2,8 @@ import { useState } from 'react';
 
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import { toast } from 'react-toastify';
-import UpdateUserRoleModal from '../../../../../../../Users/User/Downloads/b12-m11-session-part3-main/b12-m11-session-part3-main/frontend/src/components/Modal/UpdateUserRoleModal';
+import UpdateUserRoleModal from '../../model/UpdateUserRoleModal';
+
 
 const UserDataRow = ({ user, refetch, currentUser }) => {
     const [isOpen, setIsOpen] = useState(false);

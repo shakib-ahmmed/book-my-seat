@@ -1,5 +1,5 @@
 const UserStatistics = () => {
-    return <div>Customer Statistics Page</div>
+    return <div>User Statistics Page</div>
 }
 
 export default UserStatistics;
