@@ -1,13 +1,18 @@
 import { Dialog, DialogTitle, DialogPanel } from '@headlessui/react'
 import useAxiosSecure from '../../hooks/useAxiosSecure'
+import useAuth from '../../hooks/useAuth'
 import toast from 'react-hot-toast'
 
 const BecomeVendorModal = ({ isOpen, closeModal }) => {
     const axiosSecure = useAxiosSecure()
+    const { user } = useAuth()
 
     const handleRequest = async () => {
         try {
-            await axiosSecure.post('/become-vendor')
+            await axiosSecure.post('/become-vendor', {
+                userEmail: user.email,
+            })
+
             toast.success('Vendor request sent! Please wait for admin approval.')
         } catch (err) {
             console.log(err)

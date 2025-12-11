@@ -61,19 +61,9 @@ const router = createBrowserRouter([
     ],
   },
 
-  // PRIVATE ROUTES
-  {
-    path: "/",
-    element: <PrivetRoute />,
-    children: [
-      {
-        path: "all-tickets",
-        element: <AllTickets />
-      },
-    ],
-  },
 
   // DASHBOARD 
+
   {
     path: "/dashboard",
     element: (

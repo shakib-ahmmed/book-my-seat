@@ -1,15 +1,14 @@
 import UserStatistics from '../../../components/dashboard/statistics/UserStatistics'
 import AdminStatistics from '../../../components/dashboard/statistics/AdminStatistics'
 import VendorStatistics from '../../../components/dashboard/statistics/VendorStatistics'
-import LoadingSpinner from '../../../components/LoadingSpinner'
 import useRole from '../../../hooks/useRole'
 
 
 
 
 const Statistics = () => {
-    const [role, isRoleLoading] = useRole()
-    if (isRoleLoading) return <LoadingSpinner />
+    const [role] = useRole()
+
     return (
         <div>
             {role === 'user' && <UserStatistics />}

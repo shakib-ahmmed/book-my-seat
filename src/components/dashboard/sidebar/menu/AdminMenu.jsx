@@ -8,8 +8,8 @@ const AdminMenu = () => {
             <MenuItem icon={FaUserCog} label='Manage Users' address='manage-users' />
             <MenuItem
                 icon={FaUserTag}
-                label='Seller Requests'
-                address='seller-requests'
+                label='vendor Requests'
+                address='vendor-requests'
             />
         </>
     )
