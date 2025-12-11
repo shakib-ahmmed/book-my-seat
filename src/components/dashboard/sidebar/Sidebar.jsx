@@ -1,108 +1,94 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import useAuth from '../../../hooks/useAuth'
-import useRole from '../../../hooks/useRole'
-import logo from '../../../../public/logo.png'
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { BsGraphUp } from "react-icons/bs";
+import { FcSettings } from "react-icons/fc";
+import { AiOutlineBars } from "react-icons/ai";
+import { GrLogout } from "react-icons/gr";
 
-// Icons
-import { GrLogout } from 'react-icons/gr'
-import { FcSettings } from 'react-icons/fc'
-import { AiOutlineBars } from 'react-icons/ai'
-import { BsGraphUp } from 'react-icons/bs'
+import useAuth from "../../../hooks/useAuth";
+import LoadingSpinner from "../../LoadingSpinner";
 
-import LoadingSpinner from '../../LoadingSpinner'
-import MenuItem from './menu/MenuItem'
-import UserMenu from './menu/UserMenu'
-import VendorMenu from './menu/VendorMenu'
-import AdminMenu from './menu/AdminMenu'
+import UserMenu from "./menu/UserMenu";
+import VendorMenu from "./menu/VendorMenu";
+import AdminMenu from "./menu/AdminMenu";
+import MenuItem from "./menu/MenuItem"; // your custom MenuItem component
 
 const Sidebar = () => {
-    const { logOut } = useAuth()
-    const [isActive, setActive] = useState(false)
-    const [role, isRoleLoading] = useRole()
+    const { logOut, role, roleLoading } = useAuth();
+    const [isOpen, setIsOpen] = useState(false);
 
-    const handleToggle = () => setActive(!isActive)
-
-    if (isRoleLoading) return <LoadingSpinner />
+    if (roleLoading) return <LoadingSpinner />;
 
     return (
         <>
-            {/* Small Screen Navbar */}
-            <div className="bg-white text-[#3d1816] flex justify-between md:hidden shadow-md">
-                <div className="cursor-pointer p-4">
-                    <Link to="/">
-                        <img src={logo} alt="logo" width="90" height="90" />
-                    </Link>
-                </div>
+            {/* Mobile Navbar */}
+            <div className="md:hidden flex items-center justify-between bg-white shadow-md px-4 py-3">
+                <Link to="/dashboard">
+                    <img src="../../../../public/logo.png" alt="logo" className="w-24 h-auto" />
+                </Link>
 
                 <button
-                    onClick={handleToggle}
-                    className="mobile-menu-button p-4 focus:outline-none"
+                    onClick={() => setIsOpen(!isOpen)}
+                    className="text-gray-700 focus:outline-none"
                 >
-                    <AiOutlineBars className="h-6 w-6 text-[#3d1816] " />
+                    <AiOutlineBars className="w-6 h-6" />
                 </button>
             </div>
 
+            {/* Overlay for mobile */}
+            <div
+                className={`fixed inset-0 z-20 bg-black/40 transition-opacity duration-300 md:hidden ${isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+                    }`}
+                onClick={() => setIsOpen(false)}
+            ></div>
+
             {/* Sidebar */}
             <div
-                className={`z-10 md:fixed flex flex-col justify-between overflow-hidden 
-                bg-white text-[#3d1816]
-                w-64 space-y-6 px-4 py-6 shadow-xl
-                absolute inset-y-0 left-0 transform
-                ${isActive ? "-translate-x-full" : "md:translate-x-0"}
-                transition-all duration-300 ease-in-out`}
+                className={`fixed inset-y-0 left-0 z-30 w-64 bg-white shadow-xl transform
+                    md:translate-x-0 transition-transform duration-300 ease-in-out
+                    ${isOpen ? "translate-x-0" : "-translate-x-full"}
+                    flex flex-col justify-between`}
             >
+                {/* Logo */}
                 <div className="flex flex-col h-full">
-
-                    {/* Logo Box */}
-                    <div className="hidden md:flex justify-center mb-8">
-                        <div className="bg-[#341311] p-3 rounded-xl shadow-md">
-                            <Link to="/">
-                                <img
-                                    src={logo}
-                                    alt="logo"
-                                    width="110"
-                                    className="rounded-lg"
-                                />
-                            </Link>
-                        </div>
+                    <div className="flex justify-center mt-6 mb-8">
+                        <Link to="/dashboard">
+                            <img
+                                src="../../../../public/icon.png"
+                                alt="logo"
+                                className="lg:w-50 w-40 h-40 lg:h-auto rounded-2xl border-4 bg-black border-yellow-400 shadow-lg hover:scale-105 transition-transform duration-300"
+                            />
+                        </Link>
                     </div>
 
                     {/* Menu */}
-                    <div className="flex flex-col flex-1 space-y-2">
-
-                        {/* Dashboard */}
+                    <div className="flex-1 flex flex-col space-y-2 px-4">
                         <MenuItem
                             icon={BsGraphUp}
                             label="Statistics"
                             address="/dashboard"
-                            className="hover:bg-[#4d1d1a] transition rounded-lg"
+                            className="hover:bg-gray-200 transition rounded-lg"
                         />
 
-                        {/* Role-Based Menus */}
                         {role === "user" && <UserMenu />}
                         {role === "vendor" && <VendorMenu />}
                         {role === "admin" && <AdminMenu />}
                     </div>
 
-                    {/* Bottom Menu */}
-                    <div className="mt-4">
-                        <hr className="border-[#5e2824]" />
+                    {/* Bottom */}
+                    <div className="px-4 mb-6">
+                        <hr className="border-gray-300 mb-4" />
 
-                        {/* Profile */}
                         <MenuItem
                             icon={FcSettings}
                             label="Profile"
                             address="/dashboard/profile"
-                            className="hover:bg-[#4d1d1a] rounded-lg"
+                            className="hover:bg-gray-200 rounded-lg transition"
                         />
 
-                        {/* Logout Button */}
                         <button
                             onClick={logOut}
-                            className="flex items-center w-full px-4 py-3 mt-3 
-                            text-[#3d1816]  bg-white hover:bg-[#5e2824] hover:text-white  rounded-lg 
-                            transition duration-300 shadow-sm"
+                            className="flex items-center w-full px-4 py-3 mt-3 bg-white text-gray-700 hover:bg-red-600 hover:text-white rounded-lg transition duration-300"
                         >
                             <GrLogout className="w-5 h-5" />
                             <span className="ml-3 font-medium">Logout</span>
@@ -111,7 +97,7 @@ const Sidebar = () => {
                 </div>
             </div>
         </>
-    )
-}
+    );
+};
 
 export default Sidebar;

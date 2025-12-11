@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import useAxiosSecure from '../../hooks/useAxiosSecure';
-import LoadingSpinner from '../shared/LoadingSpinner';
 import toast from 'react-hot-toast';
+import useAxiosSecure from '../../../hooks/useAxiosSecure';
+
 
 const TransactionHistory = ({ userEmail }) => {
     const axiosSecure = useAxiosSecure();

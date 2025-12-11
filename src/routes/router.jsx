@@ -22,6 +22,8 @@ import VendorRequests from "../pages/dashboard/admin/VendorRequests.jsx";
 import Profile from "../pages/dashboard/common/Profile.jsx";
 import MyTickets from "../pages/dashboard/user/MyTickets.jsx";
 import MyAddedTickets from "../pages/dashboard/vendor/MyAddedTickets.jsx";
+import TransactionHistory from "../pages/dashboard/user/TransactionHistory.jsx";
+import TicketDetails from "../components/Home/TicketDetails.jsx";
 
 
 
@@ -41,7 +43,10 @@ const router = createBrowserRouter([
         path: "all-tickets",
         element: <AllTickets />
       },
-
+      {
+        path: "ticket-details/:id",
+        element: <TicketDetails />
+      },
     ],
   },
 
@@ -101,7 +106,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: 'revenue-overview',
+        path: "revenue-overview",
         element: (
           <PrivetRoute>
             <VendorRoute>
@@ -111,7 +116,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: 'manage-users',
+        path: "manage-users",
         element: (
           <PrivateRoute>
             <AdminRoute>
@@ -121,7 +126,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: 'Vendor-Request',
+        path: "vendor-request",
         element: (
           <PrivateRoute>
             <AdminRoute>
@@ -131,7 +136,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: 'Profile',
+        path: "profile",
         element: (
           <PrivateRoute>
             <Profile />
@@ -139,15 +144,25 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: 'my-tickets',
+        path: "my-tickets",
         element: (
           <PrivateRoute>
             <MyTickets />
           </PrivateRoute>
         ),
       },
+      {
+        path: "transaction-history",
+        element: (
+          <PrivateRoute>
+            <TransactionHistory />
+          </PrivateRoute>
+        ),
+      },
     ],
   },
+
+  // error
 
   {
     path: "*",
