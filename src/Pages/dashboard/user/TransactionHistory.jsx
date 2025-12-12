@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
+import LoadingSpinner from '../../../components/LoadingSpinner';
 
 
 const TransactionHistory = ({ userEmail }) => {
@@ -44,7 +45,7 @@ const TransactionHistory = ({ userEmail }) => {
                         <tbody>
                             {transactions.map((tx) => (
                                 <tr key={tx.id} className="hover:bg-yellow-100">
-                                    <td className="px-4 py-2 border break-words">{tx.id}</td>
+                                    <td className="px-4 py-2 border ">{tx.id}</td>
                                     <td className="px-4 py-2 border">${tx.amount.toFixed(2)}</td>
                                     <td className="px-4 py-2 border">{tx.ticketTitle}</td>
                                     <td className="px-4 py-2 border">

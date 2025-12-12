@@ -3,9 +3,6 @@ import TicketCard from "../components/Home/TicketCard";
 import axios from "axios";
 
 import { Elements } from "@stripe/react-stripe-js";
-
-
-
 import LoadingSpinner from "../components/LoadingSpinner";
 import CheckoutForm from "../components/form/CheckoutForm";
 import BookingModal from "../components/model/BookingModal";
@@ -125,14 +122,14 @@ const AllTickets = () => {
               ticket={selectedTicket}
               quantity={quantity}
               onPaymentSuccess={() => {
-                // After payment success, book ticket and reduce quantity
                 axios.post("http://localhost:5000/bookings", {
                   ticketId: selectedTicket._id,
                   quantity,
                   status: "Paid",
                   departure: selectedTicket.departure,
                 }).then(() => {
-                  // Update ticket locally
+
+
                   setTickets((prev) =>
                     prev.map((t) =>
                       t._id === selectedTicket._id
