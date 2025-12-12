@@ -1,82 +1,75 @@
-import { useState } from 'react';
-import DeleteModal from '../../model/DeleteModal';
-import UpdateTicketModal from '../../model/UpdateTicketModel';
+import React from "react";
+
+const TicketDataRow = ({ ticket: booking, refetch }) => {
+  const ticket = booking.ticket;
+
+  if (!ticket) {
+    return (
+      <tr>
+        <td colSpan={9} className="px-6 py-4 text-center text-gray-500">
+          Ticket details not available
+        </td>
+      </tr>
+    );
+  }
 
 
-const TicketDataRow = ({ ticket }) => {
-  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [isEditOpen, setIsEditOpen] = useState(false);
+  const totalPrice = ticket.price * booking.quantity;
 
-  const openDeleteModal = () => setIsDeleteOpen(true);
-  const closeDeleteModal = () => setIsDeleteOpen(false);
-
-  const { title, from, to, transportType, price, quantity, status, perks, image } = ticket;
 
   return (
-    <tr className="bg-white border-b">
-      {/* Ticket Image */}
-      <td className="px-5 py-5 text-sm">
-        {image && (
-          <img
-            src={image}
-            alt={title}
-            className="h-12 w-20 object-cover rounded"
-          />
-        )}
-      </td>
+    <tr className="border-b border-gray-200 hover:bg-gray-50">
 
-      {/* Ticket Details */}
-      <td className="px-5 py-5 text-sm">
-        <p className="text-gray-900">{title}</p>
-      </td>
-      <td className="px-5 py-5 text-sm">
-        <p className="text-gray-900">{from} → {to}</p>
-      </td>
-      <td className="px-5 py-5 text-sm">
-        <p className="text-gray-900">{transportType}</p>
-      </td>
-      <td className="px-5 py-5 text-sm">
-        <p className="text-gray-900">${price}</p>
-      </td>
-      <td className="px-5 py-5 text-sm">
-        <p className="text-gray-900">{quantity}</p>
-      </td>
-      <td className="px-5 py-5 text-sm">
-        <p className="text-gray-900">{status}</p>
-      </td>
-
-      {/* Delete Button */}
-      <td className="px-5 py-5 text-sm">
-        <span
-          onClick={openDeleteModal}
-          className="relative cursor-pointer inline-block px-3 py-1 font-semibold text-red-900 leading-tight"
-        >
-          <span
-            aria-hidden="true"
-            className="absolute inset-0 bg-red-200 opacity-50 rounded-full"
-          ></span>
-          <span className="relative">Delete</span>
-        </span>
-        <DeleteModal isOpen={isDeleteOpen} closeModal={closeDeleteModal} ticketId={ticket._id} />
-      </td>
-
-      {/* Update Button */}
-      <td className="px-5 py-5 text-sm">
-        <span
-          onClick={() => setIsEditOpen(true)}
-          className="relative cursor-pointer inline-block px-3 py-1 font-semibold text-green-900 leading-tight"
-        >
-          <span
-            aria-hidden="true"
-            className="absolute inset-0 bg-green-200 opacity-50 rounded-full"
-          ></span>
-          <span className="relative">Update</span>
-        </span>
-        <UpdateTicketModal
-          isOpen={isEditOpen}
-          setIsEditOpen={setIsEditOpen}
-          ticket={ticket}
+      <td className="px-6 py-4">
+        <img
+          src={ticket.image}
+          alt={ticket.title}
+          className="w-16 h-16 object-cover rounded"
         />
+      </td>
+
+      <td className="px-6 py-4">{ticket.title}</td>
+
+      <td className="px-6 py-4">{ticket.from}</td>
+
+      <td className="px-6 py-4">{ticket.to}</td>
+
+      <td className="px-6 py-4">{ticket.price} BDT</td>
+
+      <td className="px-6 py-4">{booking.quantity}</td>
+
+      <td className="px-6 py-4 font-semibold">{totalPrice} BDT</td>
+
+      <td className="px-6 py-4">
+        <span
+          className={`px-2 py-1 rounded-full text-sm font-semibold ${booking.status === "Pending"
+            ? "bg-yellow-200 text-yellow-800"
+            : booking.status === "Confirmed"
+              ? "bg-green-200 text-green-800"
+              : "bg-red-200 text-red-800"
+            }`}
+        >
+          {booking.status}
+        </span>
+      </td>
+
+      {/* Action */}
+      <td className="px-6 py-4">
+        <button
+          onClick={async () => {
+            try {
+              await fetch(`http://localhost:5000/bookings/${booking._id}`, {
+                method: "DELETE",
+              });
+              refetch();
+            } catch (err) {
+              console.error(err);
+            }
+          }}
+          className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
+        >
+          Cancel
+        </button>
       </td>
     </tr>
   );

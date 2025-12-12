@@ -16,7 +16,7 @@ const ManageUsers = () => {
         queryKey: ['users', user?.email],
         queryFn: async () => {
             const res = await axiosSecure.get('/users');
-            return res.data;
+            return res.data || [];
         },
     });
 
@@ -46,9 +46,11 @@ const ManageUsers = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {users.map((u) => (
-                                    <UserDataRow key={u._id} user={u} refetch={refetch} />
-                                ))}
+                                {users
+                                    .filter(u => u)
+                                    .map(u => (
+                                        <UserDataRow key={u._id} user={u} refetch={refetch} />
+                                    ))}
                             </tbody>
                         </table>
                     </div>

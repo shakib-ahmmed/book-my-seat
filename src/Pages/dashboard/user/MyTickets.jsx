@@ -11,25 +11,31 @@ const MyTickets = () => {
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['myTickets', user?.email],
     queryFn: async () => {
-      const res = await axiosSecure(`/my-tickets`);
-      console.log('Backend response:', res.data);
+      if (!user?.email) return [];
 
-      if (Array.isArray(res.data)) return res.data;
-      if (res.data?.tickets && Array.isArray(res.data.tickets)) return res.data.tickets;
-      return []; 
+      try {
+        const res = await axiosSecure(`/my-tickets?email=${user.email}`);
+        console.log('Backend response:', res.data);
+
+        if (Array.isArray(res.data)) return res.data;
+        if (res.data?.tickets && Array.isArray(res.data.tickets)) return res.data.tickets;
+        return [];
+      } catch (err) {
+        console.error('Failed to fetch tickets:', err);
+        return [];
+      }
     },
+    enabled: !!user?.email,
   });
 
-  const tickets = data || []; 
+  const tickets = data || [];
 
   if (isLoading) return <LoadingSpinner />;
 
   return (
     <div className="container mx-auto px-4 sm:px-8">
       <div className="py-8">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-6">
-          My Tickets
-        </h2>
+        <h2 className="text-2xl font-semibold text-gray-800 mb-6">My Tickets</h2>
         <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 overflow-x-auto">
           <div className="inline-block min-w-full shadow-lg rounded-lg overflow-hidden">
             <table className="min-w-full leading-normal">
@@ -53,6 +59,9 @@ const MyTickets = () => {
                   <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">
                     Quantity
                   </th>
+                   <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">
+                    Total Price
+                  </th>
                   <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">
                     Status
                   </th>
@@ -63,7 +72,7 @@ const MyTickets = () => {
               </thead>
               <tbody className="bg-white">
                 {tickets.length > 0 ? (
-                  tickets.map(ticket => (
+                  tickets.map((ticket) => (
                     <TicketDataRow
                       key={ticket._id}
                       ticket={ticket}

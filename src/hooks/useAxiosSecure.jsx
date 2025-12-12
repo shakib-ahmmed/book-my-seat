@@ -5,7 +5,7 @@ import useAuth from './useAuth';
 
 
 const axiosInstance = axios.create({
-    baseURL: 'http://localhost:5000/...',
+    baseURL: 'http://localhost:5000/',
     withCredentials: true,
 });
 
@@ -14,7 +14,6 @@ const useAxiosSecure = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-
         if (!loading) {
             const requestInterceptor = axiosInstance.interceptors.request.use(config => {
                 if (user?.accessToken) {
@@ -23,7 +22,7 @@ const useAxiosSecure = () => {
                 return config;
             });
 
-       
+
             const responseInterceptor = axiosInstance.interceptors.response.use(
                 res => res,
                 async err => {
@@ -31,7 +30,6 @@ const useAxiosSecure = () => {
 
                     if (err.response?.status === 401 && !originalRequest._retry) {
                         originalRequest._retry = true;
-
                         try {
                             const { data } = await axios.post(
                                 'http://localhost:5000/refresh-token',
@@ -40,20 +38,19 @@ const useAxiosSecure = () => {
                             );
 
                             setUser(prev => ({ ...prev, accessToken: data.accessToken }));
-
                             originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
 
                             return axiosInstance(originalRequest);
                         } catch (refreshErr) {
                             await logOut();
-                            navigate('/login');
+                            navigate('/auth/login');
                             return Promise.reject(refreshErr);
                         }
                     }
 
                     if (err.response?.status === 403) {
                         await logOut();
-                        navigate('/login');
+                        navigate('/auth/login');
                     }
 
                     return Promise.reject(err);

@@ -3,7 +3,10 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import BookingModal from "../model/BookingModal";
 import LoadingSpinner from "../LoadingSpinner";
-import { toast } from "react-toastify";
+
+import useAuth from '../../hooks/useAuth';
+
+
 
 const TicketDetails = () => {
     const { id } = useParams();
@@ -51,20 +54,30 @@ const TicketDetails = () => {
         return () => clearInterval(timer);
     }, [ticket]);
 
+
+
+    const { user } = useAuth();
+
     const handleBooking = async () => {
         if (quantity > ticket.quantity) {
             alert("Quantity cannot exceed available tickets");
             return;
         }
 
+        if (!user?.email) {
+            alert("You must be logged in to book a ticket");
+            return;
+        }
+
         try {
-            await axios.post("http://localhost:5000/bookings", {
+            const res = await axios.post("http://localhost:5000/bookings", {
                 ticketId: ticket._id,
                 quantity,
                 status: "Pending",
                 departure: ticket.departure,
+                email: user.email,
             });
-            
+
             setTicket(prev => ({
                 ...prev,
                 quantity: prev.quantity - quantity
@@ -73,14 +86,12 @@ const TicketDetails = () => {
             alert("Booking successful!");
             setModalOpen(false);
             setQuantity(1);
-
-            toast("Booking successful!");
-            setModalOpen(false);
         } catch (err) {
-            console.error(err);
-            alert("Failed to book ticket");
+            console.error("Booking error:", err.response?.data || err);
+            alert(err.response?.data?.message || "Failed to book ticket");
         }
     };
+
 
     if (loading) return <LoadingSpinner />;
     if (!ticket) return <p className="text-center mt-10">Ticket not found</p>;

@@ -1,69 +1,80 @@
-import { useState } from 'react';
-
+import React from 'react';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import { toast } from 'react-toastify';
-import UpdateUserRoleModal from '../../model/UpdateUserRoleModal';
 
-
-const UserDataRow = ({ user, refetch, currentUser }) => {
-    const [isOpen, setIsOpen] = useState(false);
+const UserDataRow = ({ user, refetch }) => {
     const axiosSecure = useAxiosSecure();
-    const closeModal = () => setIsOpen(false);
 
-    const handleDelete = async () => {
-        if (user.email === currentUser.email) {
-            toast.error("You cannot delete yourself!");
+    if (!user) return null;
+
+    // Update user role: admin or vendor
+    const handleRoleChange = async (newRole) => {
+        if (!user._id) {
+            console.error("User ID is missing!");
             return;
         }
+
         try {
-            await axiosSecure.delete(`/users/${user._id}`);
-            toast.success('User deleted successfully');
-            refetch();
+            console.log(`Updating role of ${user.email} to ${newRole}...`);
+            const res = await axiosSecure.patch(`/users/${user._id}/role`, { role: newRole });
+            console.log("Response:", res.data);
+            toast.success(`User role updated to ${newRole}`);
+            refetch(); // Refresh the user list
         } catch (err) {
-            toast.error(err.response?.data?.message || err.message);
+            console.error("Failed to update role:", err);
+            toast.error('Failed to update role');
+        }
+    };
+
+    // Mark a vendor as fraud
+    const handleMarkFraud = async () => {
+        if (!user._id) {
+            console.error("User ID is missing!");
+            return;
+        }
+
+        try {
+            console.log(`Marking vendor ${user.email} as fraud...`);
+            const res = await axiosSecure.patch(`/users/${user._id}/fraud`);
+            console.log("Response:", res.data);
+            toast.success('Vendor marked as fraud');
+            refetch(); // Refresh the user list
+        } catch (err) {
+            console.error("Failed to mark as fraud:", err);
+            toast.error('Failed to mark as fraud');
         }
     };
 
     return (
-        <tr className="bg-white border-b">
-            <td className="px-5 py-5 text-sm text-gray-900">{user?.name || 'N/A'}</td>
-            <td className="px-5 py-5 text-sm text-gray-900">{user?.email}</td>
-            <td className="px-5 py-5 text-sm text-gray-900">{user?.role}</td>
-            <td className="px-5 py-5 text-sm">
-                <div className="flex gap-2">
+        <tr className="border-b border-gray-200">
+            <td className="px-5 py-3">{user.name || '-'}</td>
+            <td className="px-5 py-3">{user.email || '-'}</td>
+            <td className="px-5 py-3">{user.role || 'customer'}</td>
+            <td className="px-5 py-3 flex gap-2">
+                {user.role !== 'admin' && (
+                    <>
+                        <button
+                            onClick={() => handleRoleChange('admin')}
+                            className="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                        >
+                            Make Admin
+                        </button>
+                        <button
+                            onClick={() => handleRoleChange('vendor')}
+                            className="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600"
+                        >
+                            Make Vendor
+                        </button>
+                    </>
+                )}
+                {user.role === 'vendor' && (
                     <button
-                        onClick={() => setIsOpen(true)}
-                        className="relative inline-block px-3 py-1 font-semibold text-green-900"
+                        onClick={handleMarkFraud}
+                        className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
                     >
-                        <span
-                            aria-hidden="true"
-                            className="absolute inset-0 bg-green-200 opacity-50 rounded-full"
-                        ></span>
-                        <span className="relative">Update Role</span>
+                        Mark as Fraud
                     </button>
-
-                    <button
-                        onClick={handleDelete}
-                        className={`relative inline-block px-3 py-1 font-semibold text-red-900 ${user.email === currentUser.email
-                            ? 'opacity-50 cursor-not-allowed'
-                            : ''
-                            }`}
-                        disabled={user.email === currentUser.email}
-                    >
-                        <span
-                            aria-hidden="true"
-                            className="absolute inset-0 bg-red-200 opacity-50 rounded-full"
-                        ></span>
-                        <span className="relative">Delete</span>
-                    </button>
-                </div>
-
-                <UpdateUserRoleModal
-                    user={user}
-                    refetch={refetch}
-                    isOpen={isOpen}
-                    closeModal={closeModal}
-                />
+                )}
             </td>
         </tr>
     );
