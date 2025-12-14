@@ -2,111 +2,104 @@ import React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import LoadingSpinner from "../../../components/LoadingSpinner";
-import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 
 const RequestedBookings = () => {
-    const axiosSecure = useAxiosSecure();
-    const queryClient = useQueryClient();
+  const axiosSecure = useAxiosSecure();
+  const queryClient = useQueryClient();
 
-    // Fetch all bookings for the vendor
-    const { data: bookings = [], isLoading } = useQuery({
-        queryKey: ["vendor-bookings"],
-        queryFn: async () => {
-            const res = await axiosSecure.get("/vendor-bookings"); // endpoint must return vendor-specific booking requests
-            return res.data;
-        },
-    });
+  const { data: bookings = [], isLoading } = useQuery({
+    queryKey: ["requestedBookings"],
+    queryFn: async () => {
+      const res = await axiosSecure.get("/bookings?status=pending");
+      return res.data;
+    },
+  });
 
-    const handleAction = useMutation(
-        async ({ bookingId, action }) => {
-            // action = 'accepted' or 'rejected'
-            return await axiosSecure.patch(`/bookings/${bookingId}/status`, { status: action });
-        },
-        {
-            onSuccess: () => {
-                queryClient.invalidateQueries(["vendor-bookings"]);
-                Swal.fire("Success!", "Booking status updated.", "success");
-            },
-            onError: (err) => {
-                Swal.fire("Error!", err.response?.data?.message || "Action failed", "error");
-            },
-        }
-    );
+  const acceptMutation = useMutation({
+    mutationFn: async (bookingId) => {
+      const res = await axiosSecure.patch(`/bookings/${bookingId}/accept`);
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["requestedBookings"]);
+      toast.success("Booking accepted!");
+    },
+    onError: (err) => {
+      toast.error(err.response?.data?.message || "Failed to accept booking");
+    },
+  });
 
-    if (isLoading) return <LoadingSpinner />;
+  const rejectMutation = useMutation({
+    mutationFn: async (bookingId) => {
+      const res = await axiosSecure.patch(`/bookings/${bookingId}/reject`);
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["requestedBookings"]);
+      toast.success("Booking rejected!");
+    },
+    onError: (err) => {
+      toast.error(err.response?.data?.message || "Failed to reject booking");
+    },
+  });
 
-    return (
-        <div className="container mx-auto px-4 sm:px-8">
-            <div className="py-8">
-                <h2 className="text-2xl font-semibold leading-tight mb-4">Requested Bookings</h2>
-                <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
-                    <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
-                        <table className="min-w-full leading-normal">
-                            <thead>
-                                <tr>
-                                    <th className="px-5 py-3 bg-white border-b border-gray-200 text-gray-800 text-left text-sm uppercase font-normal">
-                                        User
-                                    </th>
-                                    <th className="px-5 py-3 bg-white border-b border-gray-200 text-gray-800 text-left text-sm uppercase font-normal">
-                                        Ticket
-                                    </th>
-                                    <th className="px-5 py-3 bg-white border-b border-gray-200 text-gray-800 text-left text-sm uppercase font-normal">
-                                        Quantity
-                                    </th>
-                                    <th className="px-5 py-3 bg-white border-b border-gray-200 text-gray-800 text-left text-sm uppercase font-normal">
-                                        Total Price
-                                    </th>
-                                    <th className="px-5 py-3 bg-white border-b border-gray-200 text-gray-800 text-left text-sm uppercase font-normal">
-                                        Actions
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {bookings.map((booking) => (
-                                    <tr key={booking._id}>
-                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                            <p className="text-gray-900 whitespace-no-wrap">{booking.user?.name}</p>
-                                            <p className="text-gray-600 whitespace-no-wrap">{booking.user?.email}</p>
-                                        </td>
-                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                            {booking.ticket?.title}
-                                        </td>
-                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                            {booking.quantity}
-                                        </td>
-                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                            {(booking.quantity * booking.ticket?.price).toFixed(2)}
-                                        </td>
-                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                            <button
-                                                onClick={() => handleAction.mutate({ bookingId: booking._id, action: "accepted" })}
-                                                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2"
-                                            >
-                                                Accept
-                                            </button>
-                                            <button
-                                                onClick={() => handleAction.mutate({ bookingId: booking._id, action: "rejected" })}
-                                                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                                            >
-                                                Reject
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                                {bookings.length === 0 && (
-                                    <tr>
-                                        <td colSpan={5} className="text-center py-4 text-gray-600">
-                                            No booking requests found.
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
+  if (isLoading) return <LoadingSpinner />;
+
+  return (
+    <div className="max-w-6xl mx-auto p-4 sm:p-8">
+      <h2 className="text-3xl font-bold text-[#5b0809] mb-6">Requested Bookings</h2>
+      <div className="overflow-x-auto">
+        <table className="min-w-full bg-[#b0bdc0] rounded-2xl shadow-lg overflow-hidden">
+          <thead className="bg-[#ba0c10] text-white">
+            <tr>
+              <th className="px-5 py-3 text-left text-sm font-semibold uppercase">User Name</th>
+              <th className="px-5 py-3 text-left text-sm font-semibold uppercase">User Email</th>
+              <th className="px-5 py-3 text-left text-sm font-semibold uppercase">Ticket Title</th>
+              <th className="px-5 py-3 text-left text-sm font-semibold uppercase">Quantity</th>
+              <th className="px-5 py-3 text-left text-sm font-semibold uppercase">Total Price</th>
+              <th className="px-5 py-3 text-left text-sm font-semibold uppercase">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {bookings.length > 0 ? (
+              bookings.map((booking) => (
+                <tr key={booking._id} className="border-b bg-white hover:bg-[#fddb1a]/20">
+                  <td className="px-5 py-3">{booking.userName}</td>
+                  <td className="px-5 py-3">{booking.email}</td>
+                  <td className="px-5 py-3">{booking.ticket?.title}</td>
+                  <td className="px-5 py-3">{booking.quantity}</td>
+                  <td className="px-5 py-3">
+                    {booking.quantity * (booking.ticket?.price || 0)}
+                  </td>
+                  <td className="px-5 py-3 space-x-2">
+                    <button
+                      onClick={() => acceptMutation.mutate(booking._id)}
+                      className="px-4 py-2 bg-[#5b0809] text-[#fddb1a] rounded-md font-semibold hover:bg-[#240d0b] transition"
+                    >
+                      Accept
+                    </button>
+                    <button
+                      onClick={() => rejectMutation.mutate(booking._id)}
+                      className="px-4 py-2 bg-[#ba0c10] text-white rounded-md font-semibold hover:bg-[#7e0304] transition"
+                    >
+                      Reject
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={6} className="text-center py-8 text-[#240d0b] font-semibold">
+                  No pending bookings
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
 };
 
 export default RequestedBookings;

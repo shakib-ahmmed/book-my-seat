@@ -1,6 +1,7 @@
 import React from 'react';
 import HeroSection from '../components/Home/HeroSection';
 import LatestTickets from '../components/Home/LatestTickets';
+import AdvertiseTickets from './dashboard/admin/AdvertiseTickets';
 
 
 
@@ -12,6 +13,9 @@ const Home = () => {
             </div>
             <div>
                 {/* <LatestTickets /> */}
+            </div>
+            <div>
+                {/* <AdvertiseTickets /> */}
             </div>
         </div>
     );

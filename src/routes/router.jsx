@@ -88,6 +88,8 @@ const router = createBrowserRouter([
         ),
       },
 
+      // Vendor
+
       {
         path: "my-added-tickets",
         element: (
@@ -99,7 +101,17 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "Requested-Bookings",
+        path: "add-tickets",
+        element: (
+          <PrivetRoute>
+            <VendorRoute>
+              <AddTickets />
+            </VendorRoute>
+          </PrivetRoute>
+        ),
+      },
+      {
+        path: "Requested-Booking",
         element: (
           <PrivetRoute>
             <VendorRoute>
@@ -119,13 +131,16 @@ const router = createBrowserRouter([
         ),
       },
 
+
+      // Admin
+
       {
-        path: " advertise-tickets",
+        path: "advertise-tickets",
         element: (
           <PrivetRoute>
-            <VendorRoute>
+            <AdminRoute>
               <AdvertiseTickets />
-            </VendorRoute>
+            </AdminRoute>
           </PrivetRoute>
         ),
       },
@@ -147,6 +162,7 @@ const router = createBrowserRouter([
           </PrivateRoute>
         ),
       },
+
       {
         path: "profile",
         element: (
@@ -155,6 +171,9 @@ const router = createBrowserRouter([
           </PrivateRoute>
         ),
       },
+
+      // User
+
       {
         path: "my-tickets",
         element: (

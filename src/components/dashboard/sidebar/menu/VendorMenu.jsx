@@ -6,27 +6,27 @@ import MenuItem from './MenuItem';
 const VendorMenu = () => {
     return (
         <>
+
             <MenuItem
                 icon={BsFillHouseAddFill}
-                label='Add Ticket'
-                address='add-Ticlket'
+                label='My Added Tickets'
+                address='my-added-tickets'
+            />
+            <MenuItem
+                icon={BsFillHouseAddFill}
+                label='Add Tickets'
+                address='add-tickets'
             />
 
             <MenuItem
                 icon={BsFillHouseAddFill}
-                label='Requested-Bookings'
-                address='Requested-Bookings'
+                label='Requested Booking'
+                address='Requested-Booking'
             />
 
             <MenuItem icon={MdHomeWork}
-                label='revenue-overview'
+                label='Revenue Overview'
                 address='revenue-overview'
-            />
-            
-            <MenuItem
-                icon={MdOutlineManageHistory}
-                label='Manage Orders'
-                address='manage-orders'
             />
         </>
     )

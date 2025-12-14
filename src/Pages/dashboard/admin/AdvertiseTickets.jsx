@@ -8,7 +8,7 @@ const AdvertiseTickets = () => {
   const axiosSecure = useAxiosSecure();
   const queryClient = useQueryClient();
 
-  // Fetch approved tickets
+
   const { data: tickets = [], isLoading } = useQuery({
     queryKey: ["approved-tickets"],
     queryFn: async () => {
@@ -17,10 +17,10 @@ const AdvertiseTickets = () => {
     },
   });
 
-  // Mutation to toggle advertise
+ 
   const toggleAdvertiseMutation = useMutation(
     async (ticket) => {
-      // Enforce max 6 advertised tickets
+     
       if (!ticket.advertise) {
         const advertisedCount = tickets.filter(t => t.advertise).length;
         if (advertisedCount >= 6) {

@@ -9,8 +9,8 @@ import {
     YAxis,
     CartesianGrid,
     Tooltip,
-    Legend,
     ResponsiveContainer,
+    Cell,
 } from 'recharts';
 
 const RevenueOverview = () => {
@@ -20,9 +20,10 @@ const RevenueOverview = () => {
     const { data: inventory = [], isLoading } = useQuery({
         queryKey: ['inventory', user?.email],
         queryFn: async () => {
-            const result = await axiosSecure(`/my-inventory/${user?.email}`);
+            const result = await axiosSecure.get(`/my-inventory/${user?.email}`);
             return result.data;
         },
+        enabled: !!user?.email,
     });
 
     if (isLoading) return <LoadingSpinner />;
@@ -30,30 +31,68 @@ const RevenueOverview = () => {
     // Compute totals
     const totalTicketsAdded = inventory.reduce((sum, item) => sum + item.quantity, 0);
     const totalTicketsSold = inventory.reduce((sum, item) => sum + (item.sold || 0), 0);
-    const totalRevenue = inventory.reduce((sum, item) => sum + (item.sold || 0) * item.price, 0);
+    const totalRevenue = inventory.reduce(
+        (sum, item) => sum + (item.sold || 0) * item.price,
+        0
+    );
 
     const chartData = [
-        { name: 'Tickets Added', value: totalTicketsAdded },
-        { name: 'Tickets Sold', value: totalTicketsSold },
-        { name: 'Revenue ($)', value: totalRevenue },
+        { name: 'Tickets Added', value: totalTicketsAdded, color: '#fddb1a' },
+        { name: 'Tickets Sold', value: totalTicketsSold, color: '#ba0c10' },
+        { name: 'Revenue', value: totalRevenue, color: '#5b0809' },
     ];
 
     return (
         <div className="container mx-auto px-4 sm:px-8 py-8">
-            <h2 className="text-2xl font-semibold mb-6">Revenue Overview</h2>
-            <ResponsiveContainer width="100%" height={300}>
-                <BarChart
-                    data={chartData}
-                    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-                >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Bar dataKey="value" fill="#4f46e5" />
-                </BarChart>
-            </ResponsiveContainer>
+            <h2 className="text-3xl font-bold  text-[#5b0809] mb-6">
+                Revenue Overview
+            </h2>
+            <div className="bg-[#b0bdc0]/20 p-6 rounded-xl shadow-lg">
+                <ResponsiveContainer width="100%" height={350}>
+                    <BarChart
+                        data={chartData}
+                        margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                    >
+                        <CartesianGrid strokeDasharray="3 3" stroke="#615d5e" />
+                        <XAxis
+                            dataKey="name"
+                            stroke="#240d0b"
+                            tick={{ fill: '#240d0b', fontSize: 14, fontWeight: '600' }}
+                        />
+                        <YAxis
+                            stroke="#240d0b"
+                            tick={{ fill: '#240d0b', fontSize: 14, fontWeight: '600' }}
+                        />
+                        <Tooltip
+                            contentStyle={{
+                                backgroundColor: '#e9d44c',
+                                borderRadius: '8px',
+                                border: 'none',
+                                color: '#240d0b',
+                                fontWeight: '600',
+                            }}
+                            cursor={{ fill: '#fddb1a80' }}
+                        />
+                        <Bar dataKey="value" barSize={60}>
+                            {chartData.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={entry.color} />
+                            ))}
+                        </Bar>
+                    </BarChart>
+                </ResponsiveContainer>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-8 text-center">
+                    <div className="bg-[#e9d44c]/40 p-4 rounded-xl font-semibold text-[#240d0b]">
+                        Tickets Added: {totalTicketsAdded}
+                    </div>
+                    <div className="bg-[#ba0c10]/40 p-4 rounded-xl font-semibold text-white">
+                        Tickets Sold: {totalTicketsSold}
+                    </div>
+                    <div className="bg-[#5b0809]/40 p-4 rounded-xl font-semibold text-white">
+                        Revenue: ${totalRevenue}
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };
