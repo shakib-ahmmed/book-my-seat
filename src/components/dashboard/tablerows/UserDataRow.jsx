@@ -1,78 +1,101 @@
-import React from 'react';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
-import { toast } from 'react-toastify';
+import Swal from 'sweetalert2';
 
 const UserDataRow = ({ user, refetch }) => {
     const axiosSecure = useAxiosSecure();
 
-    if (!user) return null;
-
-    // Update user role: admin or vendor
-    const handleRoleChange = async (newRole) => {
-        if (!user._id) {
-            console.error("User ID is missing!");
-            return;
-        }
-
+    const handleMakeAdmin = async () => {
         try {
-            console.log(`Updating role of ${user.email} to ${newRole}...`);
-            const res = await axiosSecure.patch(`/users/${user._id}/role`, { role: newRole });
-            console.log("Response:", res.data);
-            toast.success(`User role updated to ${newRole}`);
-            refetch(); // Refresh the user list
-        } catch (err) {
-            console.error("Failed to update role:", err);
-            toast.error('Failed to update role');
+            const res = await axiosSecure.patch(`/users/${user._id}/role`, {
+                role: 'admin',
+            });
+
+            if (res.data?.modifiedCount > 0 || res.data?.message) {
+                Swal.fire('Success', 'User is now Admin', 'success');
+                refetch();
+            }
+        } catch (error) {
+            console.error(error);
+            Swal.fire('Error', 'Failed to update role', 'error');
         }
     };
 
-    // Mark a vendor as fraud
-    const handleMarkFraud = async () => {
-        if (!user._id) {
-            console.error("User ID is missing!");
-            return;
-        }
-
+    const handleMakeVendor = async () => {
         try {
-            console.log(`Marking vendor ${user.email} as fraud...`);
-            const res = await axiosSecure.patch(`/users/${user._id}/fraud`);
-            console.log("Response:", res.data);
-            toast.success('Vendor marked as fraud');
-            refetch(); // Refresh the user list
-        } catch (err) {
-            console.error("Failed to mark as fraud:", err);
-            toast.error('Failed to mark as fraud');
+            const res = await axiosSecure.patch(`/users/${user._id}/role`, {
+                role: 'vendor',
+            });
+
+            if (res.data?.modifiedCount > 0 || res.data?.message) {
+                Swal.fire('Success', 'User is now Vendor', 'success');
+                refetch();
+            }
+        } catch (error) {
+            console.error(error);
+            Swal.fire('Error', 'Failed to update role', 'error');
         }
+    };
+
+    const handleMarkFraud = async () => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'This vendor will be marked as fraud!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, mark fraud',
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    const res = await axiosSecure.patch(`/users/${user._id}/fraud`);
+
+                    if (res.data?.message) {
+                        Swal.fire('Marked!', 'Vendor marked as fraud', 'success');
+                        refetch();
+                    }
+                } catch (error) {
+                    console.error(error);
+                    Swal.fire('Error', 'Failed to mark fraud', 'error');
+                }
+            }
+        });
     };
 
     return (
-        <tr className="border-b border-gray-200">
-            <td className="px-5 py-3">{user.name || '-'}</td>
-            <td className="px-5 py-3">{user.email || '-'}</td>
-            <td className="px-5 py-3">{user.role || 'customer'}</td>
-            <td className="px-5 py-3 flex gap-2">
+        <tr>
+            <td className="px-5 py-3 border-b border-gray-200 bg-white text-sm">
+                {user.name || 'N/A'}
+            </td>
+            <td className="px-5 py-3 border-b border-gray-200 bg-white text-sm">
+                {user.email}
+            </td>
+            <td className="px-5 py-3 border-b border-gray-200 bg-white text-sm capitalize">
+                {user.role}
+            </td>
+            <td className="px-5 py-3 border-b border-gray-200 bg-white text-sm space-x-2">
                 {user.role !== 'admin' && (
-                    <>
-                        <button
-                            onClick={() => handleRoleChange('admin')}
-                            className="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-                        >
-                            Make Admin
-                        </button>
-                        <button
-                            onClick={() => handleRoleChange('vendor')}
-                            className="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600"
-                        >
-                            Make Vendor
-                        </button>
-                    </>
+                    <button
+                        onClick={handleMakeAdmin}
+                        className="bg-green-500 text-white px-3 py-1 rounded text-xs"
+                    >
+                        Make Admin
+                    </button>
                 )}
-                {user.role === 'vendor' && (
+
+                {user.role !== 'vendor' && (
+                    <button
+                        onClick={handleMakeVendor}
+                        className="bg-blue-500 text-white px-3 py-1 rounded text-xs"
+                    >
+                        Make Vendor
+                    </button>
+                )}
+
+                {user.role === 'vendor' && !user.fraud && (
                     <button
                         onClick={handleMarkFraud}
-                        className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                        className="bg-red-500 text-white px-3 py-1 rounded text-xs"
                     >
-                        Mark as Fraud
+                        Mark Fraud
                     </button>
                 )}
             </td>

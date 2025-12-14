@@ -24,6 +24,7 @@ import MyTickets from "../pages/dashboard/user/MyTickets.jsx";
 import MyAddedTickets from "../pages/dashboard/vendor/MyAddedTickets.jsx";
 import TransactionHistory from "../pages/dashboard/user/TransactionHistory.jsx";
 import TicketDetails from "../components/Home/TicketDetails.jsx";
+import RequestedBookings from "../pages/dashboard/vendor/RequestedBookings.jsx";
 
 
 
@@ -85,22 +86,23 @@ const router = createBrowserRouter([
           </PrivateRoute>
         ),
       },
-      {
-        path: "add-tickets",
-        element: (
-          <PrivetRoute>
-            <VendorRoute>
-              <AddTickets />
-            </VendorRoute>
-          </PrivetRoute>
-        ),
-      },
+
       {
         path: "my-added-tickets",
         element: (
           <PrivetRoute>
             <VendorRoute>
               <MyAddedTickets />
+            </VendorRoute>
+          </PrivetRoute>
+        ),
+      },
+      {
+        path: "Requested-Bookings",
+        element: (
+          <PrivetRoute>
+            <VendorRoute>
+              <RequestedBookings />
             </VendorRoute>
           </PrivetRoute>
         ),
@@ -124,7 +126,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "vendor-request",
+        path: "vendor-requests",
         element: (
           <PrivateRoute>
             <AdminRoute>

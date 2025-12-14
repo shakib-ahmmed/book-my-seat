@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import app from "../firebase/firebase.config";
 import {
     getAuth,
@@ -12,8 +12,7 @@ import {
     sendPasswordResetEmail
 } from "firebase/auth";
 import axios from "axios";
-
-import { AuthContext } from './AuthContext'
+import { AuthContext } from "./AuthContext";
 
 const auth = getAuth(app);
 
@@ -31,13 +30,22 @@ const AuthProvider = ({ children }) => {
     const signIn = (email, password) =>
         signInWithEmailAndPassword(auth, email, password);
 
-    const googleSignIn = () => signInWithPopup(auth, googleProvider);
-
-    const updateUser = (data) => updateProfile(auth.currentUser, data);
-
-    const resetPassword = (email) => sendPasswordResetEmail(auth, email);
+    const googleSignIn = () =>
+        signInWithPopup(auth, googleProvider);
 
     const logOut = () => signOut(auth);
+
+    const resetPassword = (email) =>
+        sendPasswordResetEmail(auth, email);
+    
+    const updateUser = async (data) => {
+        if (!auth.currentUser) return;
+
+        await updateProfile(auth.currentUser, data);
+        await auth.currentUser.reload(); 
+
+        setUser({ ...auth.currentUser });
+    };
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -47,12 +55,12 @@ const AuthProvider = ({ children }) => {
             if (currentUser?.email) {
                 try {
                     setRoleLoading(true);
-                    const response = await axios.get(
+                    const res = await axios.get(
                         `http://localhost:5000/user/role?email=${currentUser.email}`
                     );
-                    setRole(response.data.role || "user");
+                    setRole(res.data.role || "user");
                 } catch (err) {
-                    console.error("Failed to fetch role:", err);
+                    console.error("Role fetch failed:", err);
                     setRole("user");
                 } finally {
                     setRoleLoading(false);

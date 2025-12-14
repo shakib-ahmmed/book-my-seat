@@ -11,7 +11,18 @@ const VendorMenu = () => {
                 label='Add Ticket'
                 address='add-Ticlket'
             />
-            <MenuItem icon={MdHomeWork} label='My Inventory' address='my-inventory' />
+
+            <MenuItem
+                icon={BsFillHouseAddFill}
+                label='Requested-Bookings'
+                address='Requested-Bookings'
+            />
+
+            <MenuItem icon={MdHomeWork}
+                label='revenue-overview'
+                address='revenue-overview'
+            />
+            
             <MenuItem
                 icon={MdOutlineManageHistory}
                 label='Manage Orders'
