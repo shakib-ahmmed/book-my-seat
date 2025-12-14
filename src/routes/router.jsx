@@ -25,6 +25,7 @@ import MyAddedTickets from "../pages/dashboard/vendor/MyAddedTickets.jsx";
 import TransactionHistory from "../pages/dashboard/user/TransactionHistory.jsx";
 import TicketDetails from "../components/Home/TicketDetails.jsx";
 import RequestedBookings from "../pages/dashboard/vendor/RequestedBookings.jsx";
+import AdvertiseTickets from "../pages/dashboard/admin/AdvertiseTickets.jsx";
 
 
 
@@ -113,6 +114,17 @@ const router = createBrowserRouter([
           <PrivetRoute>
             <VendorRoute>
               <RevenueOverview />
+            </VendorRoute>
+          </PrivetRoute>
+        ),
+      },
+
+      {
+        path: " advertise-tickets",
+        element: (
+          <PrivetRoute>
+            <VendorRoute>
+              <AdvertiseTickets />
             </VendorRoute>
           </PrivetRoute>
         ),
