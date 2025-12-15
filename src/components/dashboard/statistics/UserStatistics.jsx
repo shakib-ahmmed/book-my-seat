@@ -1,79 +1,91 @@
-import React, { useState } from "react";
+
 import { useQuery } from "@tanstack/react-query";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import LoadingSpinner from "../../../components/LoadingSpinner";
 import { toast } from "react-toastify";
+import Countdown from "react-countdown";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements, useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 
-const TicketsList = () => {
+
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PK);
+
+const MyBookedTickets = () => {
     const { user } = useAuth();
     const axiosSecure = useAxiosSecure();
-    const [selectedQuantity, setSelectedQuantity] = useState({});
 
-    const { data: tickets = [], isLoading, refetch } = useQuery({
-        queryKey: ["tickets"],
+    const { data: bookings = [], isLoading, refetch } = useQuery({
+        queryKey: ["userBookings", user?.email],
         queryFn: async () => {
-            const res = await axiosSecure.get("/tickets?status=approved");
+            const res = await axiosSecure.get(`/bookings/user/${user?.email}`);
             return res.data;
         },
+        enabled: !!user?.email,
     });
 
     if (isLoading) return <LoadingSpinner />;
 
-    const handleBookTicket = async (ticket) => {
-        const quantity = selectedQuantity[ticket._id] || 1;
-
-        if (quantity > ticket.quantity) {
-            toast.error("Not enough tickets available");
+    const handlePayNow = async (booking) => {
+        if (new Date(booking.ticket.departure) < new Date()) {
+            toast.error("Cannot pay, departure has passed");
             return;
         }
-
-        try {
-            const res = await axiosSecure.post("/bookings", {
-                ticketId: ticket._id,
-                quantity,
-                email: user.email,
-            });
-
-            toast.success("Booking successful!");
-            refetch(); 
-        } catch (err) {
-            console.error(err);
-            toast.error("Booking failed");
-        }
+        toast.info("Open Stripe Payment Interface");
     };
 
     return (
         <div className="container mx-auto px-4 py-8">
-            <h2 className="text-2xl font-bold mb-6">Available Tickets</h2>
+            <h2 className="text-2xl font-bold mb-6 text-gray-800">My Booked Tickets</h2>
+
+            {bookings.length === 0 && (
+                <p className="text-gray-500 text-center">You have no booked tickets.</p>
+            )}
+
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {tickets.map((ticket) => (
-                    <div key={ticket._id} className="p-4 border rounded shadow">
-                        <h3 className="text-lg font-semibold">{ticket.title}</h3>
-                        <p>Price: {ticket.price} BDT</p>
-                        <p>Available: {ticket.quantity}</p>
-                        <p>Departure: {new Date(ticket.departure).toLocaleString()}</p>
-
-                        <input
-                            type="number"
-                            min="1"
-                            max={ticket.quantity}
-                            value={selectedQuantity[ticket._id] || 1}
-                            onChange={(e) =>
-                                setSelectedQuantity({
-                                    ...selectedQuantity,
-                                    [ticket._id]: Number(e.target.value),
-                                })
-                            }
-                            className="border p-1 w-20 mt-2"
+                {bookings.map((b) => (
+                    <div
+                        key={b._id}
+                        className="p-4 rounded-lg shadow bg-white flex flex-col justify-between"
+                    >
+                        <img
+                            src={b.ticket.image}
+                            alt={b.ticket.title}
+                            className="w-full h-40 object-cover rounded mb-4"
                         />
+                        <h3 className="text-lg font-semibold mb-1">{b.ticket.title}</h3>
+                        <p className="text-gray-700">
+                            {b.ticket.from} → {b.ticket.to}
+                        </p>
+                        <p className="text-gray-700">Quantity: {b.quantity}</p>
+                        <p className="text-gray-700">
+                            Total: {b.quantity * (b.ticket.price || 0)} BDT
+                        </p>
+                        <p className="text-gray-700">
+                            Departure: {new Date(b.ticket.departure).toLocaleString()}
+                        </p>
+                        <p className={`font-semibold mt-2 ${b.status === 'rejected' ? 'text-red-600' : 'text-green-600'}`}>
+                            Status: {b.status}
+                        </p>
 
-                        <button
-                            onClick={() => handleBookTicket(ticket)}
-                            className="mt-2 px-4 py-2 bg-[#ba0c10] text-white rounded hover:bg-[#5c0809]"
-                        >
-                            Book
-                        </button>
+                        {b.status === "accepted" && new Date(b.ticket.departure) > new Date() && (
+                            <>
+                                <Countdown
+                                    date={new Date(b.ticket.departure)}
+                                    className="text-gray-600 mt-2"
+                                />
+                                <button
+                                    onClick={() => handlePayNow(b)}
+                                    className="mt-3 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                                >
+                                    Pay Now
+                                </button>
+                            </>
+                        )}
+
+                        {b.status === "pending" && (
+                            <p className="text-yellow-600 mt-2">Waiting for vendor approval...</p>
+                        )}
                     </div>
                 ))}
             </div>
@@ -81,4 +93,4 @@ const TicketsList = () => {
     );
 };
 
-export default TicketsList;
+export default MyBookedTickets;

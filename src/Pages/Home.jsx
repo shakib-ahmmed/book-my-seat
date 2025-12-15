@@ -1,7 +1,8 @@
 import React from 'react';
 import HeroSection from '../components/Home/HeroSection';
+
+import HomeAdvertisedTickets from '../components/Home/HomeAdvertisedTickets';
 import LatestTickets from '../components/Home/LatestTickets';
-import AdvertiseTickets from './dashboard/admin/AdvertiseTickets';
 
 
 
@@ -11,11 +12,13 @@ const Home = () => {
             <div>
                 <HeroSection />
             </div>
+
             <div>
-                {/* <LatestTickets /> */}
+                <HomeAdvertisedTickets />
             </div>
+
             <div>
-                {/* <AdvertiseTickets /> */}
+                <LatestTickets />
             </div>
         </div>
     );

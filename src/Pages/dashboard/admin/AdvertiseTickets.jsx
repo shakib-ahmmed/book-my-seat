@@ -2,7 +2,7 @@ import React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import LoadingSpinner from "../../../components/LoadingSpinner";
-import Swal from "sweetalert2";
+import { toast, ToastContainer } from "react-toastify";
 
 const AdvertiseTickets = () => {
   const axiosSecure = useAxiosSecure();
@@ -13,70 +13,72 @@ const AdvertiseTickets = () => {
     queryKey: ["approved-tickets"],
     queryFn: async () => {
       const res = await axiosSecure.get("/tickets?status=approved");
-      return res.data;
+      return res.data.map(ticket => ({
+        ...ticket,
+        advertise: ticket.advertise || false,
+      }));
     },
   });
 
- 
-  const toggleAdvertiseMutation = useMutation(
-    async (ticket) => {
-     
+
+  const toggleAdvertiseMutation = useMutation({
+    mutationFn: async (ticket) => {
       if (!ticket.advertise) {
         const advertisedCount = tickets.filter(t => t.advertise).length;
         if (advertisedCount >= 6) {
           throw new Error("You cannot advertise more than 6 tickets at a time");
         }
       }
+
       const res = await axiosSecure.patch(`/tickets/${ticket._id}/advertise`, {
         advertise: !ticket.advertise,
       });
       return res.data;
     },
-    {
-      onSuccess: () => queryClient.invalidateQueries(["approved-tickets"]),
-      onError: (err) => Swal.fire("Error", err.message, "error"),
-    }
-  );
+    onSuccess: (data, ticket) => {
+      queryClient.invalidateQueries({ queryKey: ["approved-tickets"] });
+      toast.success(ticket.advertise ? "Ticket unadvertised!" : "Ticket advertised!");
+    },
+    onError: (err) => toast.error(err.message),
+  });
 
   if (isLoading) return <LoadingSpinner />;
 
+  if (tickets.length === 0)
+    return <p className="text-center mt-10 text-[#240d0b] font-semibold">No approved tickets available.</p>;
+
   return (
-    <div className="container mx-auto px-4 sm:px-8 py-8">
-      <h2 className="text-2xl font-semibold mb-6">Advertise Tickets</h2>
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <h2 className="text-3xl font-bold mb-6 text-[#240d0b]">Advertise Tickets Section</h2>
 
       <div className="overflow-x-auto">
-        <table className="min-w-full bg-white shadow rounded-lg overflow-hidden">
+        <table className="min-w-full bg-[#b0bdc0] shadow-lg rounded-lg overflow-hidden">
           <thead>
-            <tr>
-              <th className="px-5 py-3 text-left text-sm font-medium text-gray-700 uppercase">
-                Title
-              </th>
-              <th className="px-5 py-3 text-left text-sm font-medium text-gray-700 uppercase">
-                Price
-              </th>
-              <th className="px-5 py-3 text-left text-sm font-medium text-gray-700 uppercase">
-                Quantity
-              </th>
-              <th className="px-5 py-3 text-left text-sm font-medium text-gray-700 uppercase">
-                Advertise
-              </th>
+            <tr className="bg-[#e9d44c] text-[#240d0b]">
+              <th className="px-5 py-3 text-left text-sm font-semibold uppercase">Title</th>
+              <th className="px-5 py-3 text-left text-sm font-semibold uppercase">Price</th>
+              <th className="px-5 py-3 text-left text-sm font-semibold uppercase">Quantity</th>
+              <th className="px-5 py-3 text-left text-sm font-semibold uppercase">Advertise</th>
             </tr>
           </thead>
 
           <tbody>
             {tickets.map((ticket) => (
-              <tr key={ticket._id} className="border-b">
-                <td className="px-5 py-3">{ticket.title}</td>
-                <td className="px-5 py-3">{ticket.price} BDT</td>
-                <td className="px-5 py-3">{ticket.quantity}</td>
+              <tr
+                key={ticket._id}
+                className="border-b bg-[#fddb1a] even:bg-[#c9c484] hover:bg-[#e9d44c] transition-colors"
+              >
+                <td className="px-5 py-3 text-[#240d0b] font-medium">{ticket.title}</td>
+                <td className="px-5 py-3 text-[#240d0b] font-medium">{ticket.price} BDT</td>
+                <td className="px-5 py-3 text-[#240d0b] font-medium">{ticket.quantity}</td>
                 <td className="px-5 py-3">
                   <button
                     onClick={() => toggleAdvertiseMutation.mutate(ticket)}
-                    className={`px-4 py-1 rounded font-semibold text-white ${
-                      ticket.advertise ? "bg-green-600" : "bg-gray-400"
-                    }`}
+                    className={`px-4 py-1 rounded font-semibold text-white cursor-pointer transition-colors duration-300
+                      ${ticket.advertise ? "bg-[#7e0304] hover:bg-[#5b0809]" : "bg-[#ba0c10] hover:bg-[#c9c484]"}
+                    `}
                   >
-                    {ticket.advertise ? "Advertised" : "Advertise"}
+                    {ticket.advertise ? "Unadvertise" : "Advertise"}
                   </button>
                 </td>
               </tr>
@@ -84,6 +86,7 @@ const AdvertiseTickets = () => {
           </tbody>
         </table>
       </div>
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 };

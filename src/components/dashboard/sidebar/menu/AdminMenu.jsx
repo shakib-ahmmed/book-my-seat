@@ -12,13 +12,13 @@ const AdminMenu = () => {
 
             <MenuItem
                 icon={FaUserTag}
-                label='vendor Requests'
-                address='vendor-requests'
+                label='Manage Tickets'
+                address='Manage-Tickets'
             />
 
             <MenuItem
                 icon={FaUserTag}
-                label='advertise-tickets'
+                label='Advertise Tickets'
                 address='advertise-tickets'
             />
         </>

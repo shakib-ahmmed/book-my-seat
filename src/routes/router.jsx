@@ -18,7 +18,7 @@ import Dashboard from "../pages/Dashboard.jsx";
 import ManageUsers from "../pages/dashboard/admin/ManageUsers.jsx";
 import PrivateRoute from "./PrivetRoute.jsx";
 import RevenueOverview from "../pages/dashboard/vendor/RevenueOverview.jsx";
-import VendorRequests from "../pages/dashboard/admin/VendorRequests.jsx";
+import VendorRequests from "../pages/dashboard/admin/ManageTickets.jsx";
 import Profile from "../pages/dashboard/common/Profile.jsx";
 import MyTickets from "../pages/dashboard/user/MyTickets.jsx";
 import MyAddedTickets from "../pages/dashboard/vendor/MyAddedTickets.jsx";
@@ -26,6 +26,7 @@ import TransactionHistory from "../pages/dashboard/user/TransactionHistory.jsx";
 import TicketDetails from "../components/Home/TicketDetails.jsx";
 import RequestedBookings from "../pages/dashboard/vendor/RequestedBookings.jsx";
 import AdvertiseTickets from "../pages/dashboard/admin/AdvertiseTickets.jsx";
+import ManagTickets from "../pages/dashboard/admin/ManageTickets.jsx";
 
 
 
@@ -153,11 +154,11 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "vendor-requests",
+        path: "Manage-Tickets",
         element: (
           <PrivateRoute>
             <AdminRoute>
-              <VendorRequests />
+              <ManagTickets />
             </AdminRoute>
           </PrivateRoute>
         ),

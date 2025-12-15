@@ -23,7 +23,7 @@ const Sidebar = () => {
         <>
             {/* Mobile Navbar */}
             <div className="md:hidden flex items-center justify-between bg-white shadow-md px-4 py-3">
-                <Link to="/dashboard">
+                <Link to="/">
                     <img src="../../../../public/logo.png" alt="logo" className="w-24 h-auto" />
                 </Link>
 
@@ -52,7 +52,7 @@ const Sidebar = () => {
                 {/* Logo */}
                 <div className="flex flex-col h-full">
                     <div className="flex justify-center mt-6 mb-8">
-                        <Link to="/dashboard">
+                        <Link to="/">
                             <img
                                 src="../../../../public/icon.png"
                                 alt="logo"

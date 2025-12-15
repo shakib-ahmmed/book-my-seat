@@ -20,7 +20,7 @@ const VendorMenu = () => {
 
             <MenuItem
                 icon={BsFillHouseAddFill}
-                label='Requested Booking'
+                label='RequestedBooking'
                 address='Requested-Booking'
             />
 
