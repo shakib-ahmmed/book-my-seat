@@ -1,21 +1,24 @@
-
+import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import LoadingSpinner from "../../../components/LoadingSpinner";
-import { toast } from "react-toastify";
-import Countdown from "react-countdown";
-import { loadStripe } from "@stripe/stripe-js";
-import { Elements, useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
+import {
+    BarChart,
+    Bar,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    ResponsiveContainer,
+    Cell
+} from "recharts";
 
-
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PK);
-
-const MyBookedTickets = () => {
+const UserStatistics = () => {
     const { user } = useAuth();
     const axiosSecure = useAxiosSecure();
 
-    const { data: bookings = [], isLoading, refetch } = useQuery({
+    const { data: bookings = [], isLoading } = useQuery({
         queryKey: ["userBookings", user?.email],
         queryFn: async () => {
             const res = await axiosSecure.get(`/bookings/user/${user?.email}`);
@@ -26,71 +29,86 @@ const MyBookedTickets = () => {
 
     if (isLoading) return <LoadingSpinner />;
 
-    const handlePayNow = async (booking) => {
-        if (new Date(booking.ticket.departure) < new Date()) {
-            toast.error("Cannot pay, departure has passed");
-            return;
-        }
-        toast.info("Open Stripe Payment Interface");
-    };
+    const totalBooked = bookings.length;
+    const upcomingTrips = bookings.filter(b => new Date(b.ticket.departure) > new Date()).length;
+    const totalPaid = bookings.reduce((sum, b) => sum + (b.status === "accepted" ? b.quantity * b.ticket.price : 0), 0);
+
+    const statusData = [
+        { name: "Pending", value: bookings.filter(b => b.status === "pending").length, color: "#fbbf24" }, // Yellow
+        { name: "Accepted", value: bookings.filter(b => b.status === "accepted").length, color: "#4ade80" }, // Green
+        { name: "Rejected", value: bookings.filter(b => b.status === "rejected").length, color: "#f87171" }, // Red
+    ];
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            <h2 className="text-2xl font-bold mb-6 text-gray-800">My Booked Tickets</h2>
+        <div className="container mx-auto px-4 sm:px-8 py-8">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-8">
+                My Statistics
+            </h2>
 
-            {bookings.length === 0 && (
-                <p className="text-gray-500 text-center">You have no booked tickets.</p>
-            )}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
+                <div className="bg-blue-100 rounded-2xl p-6 shadow-lg flex flex-col items-center justify-center">
+                    <h3 className="text-lg sm:text-xl font-medium text-gray-900">Total Booked Tickets</h3>
+                    <p className="mt-3 text-2xl sm:text-3xl font-bold text-gray-900">{totalBooked}</p>
+                </div>
+                <div className="bg-green-100 rounded-2xl p-6 shadow-lg flex flex-col items-center justify-center">
+                    <h3 className="text-lg sm:text-xl font-medium text-gray-900">Upcoming Trips</h3>
+                    <p className="mt-3 text-2xl sm:text-3xl font-bold text-gray-900">{upcomingTrips}</p>
+                </div>
+                <div className="bg-yellow-100 rounded-2xl p-6 shadow-lg flex flex-col items-center justify-center">
+                    <h3 className="text-lg sm:text-xl font-medium text-gray-900">Total Paid</h3>
+                    <p className="mt-3 text-2xl sm:text-3xl font-bold text-gray-900">৳{totalPaid}</p>
+                </div>
+            </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {bookings.map((b) => (
-                    <div
-                        key={b._id}
-                        className="p-4 rounded-lg shadow bg-white flex flex-col justify-between"
+            <div className="bg-gray-50 rounded-2xl p-6 shadow-lg mb-10">
+                <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-5">Booking Status Overview</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    {statusData.map((s, idx) => (
+                        <div key={idx} className={`bg-opacity-40 rounded-xl p-5 text-center font-semibold text-gray-900`} style={{ backgroundColor: s.color }}>
+                            {s.name}
+                            <p className="text-2xl sm:text-3xl mt-2">{s.value}</p>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            <div className="bg-gray-50 rounded-2xl p-6 shadow-lg">
+                <h3 className="text-xl sm:text-2xl font-semibold mb-5 text-gray-900">Bookings Chart</h3>
+                <ResponsiveContainer width="100%" height={300}>
+                    <BarChart
+                        data={statusData}
+                        margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                     >
-                        <img
-                            src={b.ticket.image}
-                            alt={b.ticket.title}
-                            className="w-full h-40 object-cover rounded mb-4"
+                        <CartesianGrid strokeDasharray="3 3" stroke="#d1d5db" />
+                        <XAxis
+                            dataKey="name"
+                            stroke="#374151"
+                            tick={{ fill: "#374151", fontSize: 14, fontWeight: "600" }}
                         />
-                        <h3 className="text-lg font-semibold mb-1">{b.ticket.title}</h3>
-                        <p className="text-gray-700">
-                            {b.ticket.from} → {b.ticket.to}
-                        </p>
-                        <p className="text-gray-700">Quantity: {b.quantity}</p>
-                        <p className="text-gray-700">
-                            Total: {b.quantity * (b.ticket.price || 0)} BDT
-                        </p>
-                        <p className="text-gray-700">
-                            Departure: {new Date(b.ticket.departure).toLocaleString()}
-                        </p>
-                        <p className={`font-semibold mt-2 ${b.status === 'rejected' ? 'text-red-600' : 'text-green-600'}`}>
-                            Status: {b.status}
-                        </p>
-
-                        {b.status === "accepted" && new Date(b.ticket.departure) > new Date() && (
-                            <>
-                                <Countdown
-                                    date={new Date(b.ticket.departure)}
-                                    className="text-gray-600 mt-2"
-                                />
-                                <button
-                                    onClick={() => handlePayNow(b)}
-                                    className="mt-3 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                                >
-                                    Pay Now
-                                </button>
-                            </>
-                        )}
-
-                        {b.status === "pending" && (
-                            <p className="text-yellow-600 mt-2">Waiting for vendor approval...</p>
-                        )}
-                    </div>
-                ))}
+                        <YAxis
+                            stroke="#374151"
+                            tick={{ fill: "#374151", fontSize: 14, fontWeight: "600" }}
+                        />
+                        <Tooltip
+                            contentStyle={{
+                                backgroundColor: "#f9fafb",
+                                borderRadius: "8px",
+                                border: "1px solid #d1d5db",
+                                fontWeight: "600",
+                                color: "#111827",
+                            }}
+                            cursor={{ fill: "#e5e7eb80" }}
+                        />
+                        <Bar dataKey="value" barSize={60}>
+                            {statusData.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={entry.color} />
+                            ))}
+                        </Bar>
+                    </BarChart>
+                </ResponsiveContainer>
             </div>
         </div>
     );
 };
 
-export default MyBookedTickets;
+export default UserStatistics;
