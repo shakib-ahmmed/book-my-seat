@@ -8,10 +8,14 @@ import { GrLogout } from "react-icons/gr";
 import useAuth from "../../../hooks/useAuth";
 import LoadingSpinner from "../../LoadingSpinner";
 
-import UserMenu from "./menu/UserMenu";
+
 import VendorMenu from "./menu/VendorMenu";
 import AdminMenu from "./menu/AdminMenu";
-import MenuItem from "./menu/MenuItem"; // your custom MenuItem component
+import MenuItem from "./menu/MenuItem";
+import UserMenu from "./menu/UserMenu";
+
+
+
 
 const Sidebar = () => {
     const { logOut, role, roleLoading } = useAuth();
@@ -21,7 +25,7 @@ const Sidebar = () => {
 
     return (
         <>
-            {/* Mobile Navbar */}
+
             <div className="md:hidden flex items-center justify-between bg-white shadow-md px-4 py-3">
                 <Link to="/">
                     <img src="../../../../public/logo.png" alt="logo" className="w-24 h-auto" />
@@ -29,27 +33,24 @@ const Sidebar = () => {
 
                 <button
                     onClick={() => setIsOpen(!isOpen)}
-                    className="text-gray-700 focus:outline-none"
+                    className="text-gray-700 cursor-pointer focus:outline-none"
                 >
                     <AiOutlineBars className="w-6 h-6" />
                 </button>
             </div>
 
-            {/* Overlay for mobile */}
             <div
                 className={`fixed inset-0 z-20 bg-black/40 transition-opacity duration-300 md:hidden ${isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
                     }`}
                 onClick={() => setIsOpen(false)}
             ></div>
 
-            {/* Sidebar */}
             <div
                 className={`fixed inset-y-0 left-0 z-30 w-64 bg-white shadow-xl transform
                     md:translate-x-0 transition-transform duration-300 ease-in-out
                     ${isOpen ? "translate-x-0" : "-translate-x-full"}
                     flex flex-col justify-between`}
             >
-                {/* Logo */}
                 <div className="flex flex-col h-full">
                     <div className="flex justify-center mt-6 mb-8">
                         <Link to="/">
@@ -83,15 +84,15 @@ const Sidebar = () => {
                             icon={FcSettings}
                             label="Profile"
                             address="/dashboard/profile"
-                            className="hover:bg-gray-200 rounded-lg transition"
+                            className="hover:bg-gray-200 cursor-pointer rounded-lg transition"
                         />
 
                         <button
                             onClick={logOut}
-                            className="flex items-center w-full px-4 py-3 mt-3 bg-white text-gray-700 hover:bg-red-600 hover:text-white rounded-lg transition duration-300"
+                            className="flex items-center w-full px-4 py-3 mt-3 cursor-pointer bg-white text-gray-700 hover:bg-red-600 hover:text-white rounded-lg transition duration-300"
                         >
                             <GrLogout className="w-5 h-5" />
-                            <span className="ml-3 font-medium">Logout</span>
+                            <span className="ml-3 cursor-pointer font-medium">Logout</span>
                         </button>
                     </div>
                 </div>

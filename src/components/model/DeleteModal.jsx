@@ -26,14 +26,14 @@ const DeleteModal = ({ closeModal, isOpen, onDelete }) => {
                     <div className="flex justify-around">
                         <button
                             onClick={onDelete}
-                            className="bg-[#fddb1a] text-[#260d0d] px-6 py-2 rounded-lg font-semibold hover:bg-[#cac483] transition"
+                            className="bg-[#fddb1a] text-[#260d0d] px-6 py-2 rounded-lg font-semibold cursor-pointer hover:bg-[#cac483] transition"
                         >
                             Yes, Delete
                         </button>
 
                         <button
                             onClick={closeModal}
-                            className="bg-[#ba0c10] text-[#e8d44e] px-6 py-2 rounded-lg font-semibold hover:bg-[#7e0304] transition"
+                            className="bg-[#ba0c10] text-[#e8d44e] px-6 py-2 rounded-lg font-semibold cursor-pointer hover:bg-[#7e0304] transition"
                         >
                             Cancel
                         </button>
