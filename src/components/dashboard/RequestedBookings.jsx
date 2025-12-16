@@ -63,10 +63,10 @@ const RequestedBookings = ({ ticketId }) => {
                             <td className="py-2 px-4">{booking.quantity * booking.unitPrice} BDT</td>
                             <td className="py-2 px-4 flex gap-2">
                                 <button
-                                    onClick={() => handleBooking(booking._id, "accepted")}
+                                    onClick={() => handleBooking(booking._id, "approved")}
                                     className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition"
                                 >
-                                    Accept
+                                    Approve
                                 </button>
                                 <button
                                     onClick={() => handleBooking(booking._id, "rejected")}

@@ -1,23 +1,47 @@
-import { useQuery } from '@tanstack/react-query'
-import useAxiosSecure from '../../../hooks/useAxiosSecure'
-import useAuth from '../../../hooks/useAuth'
-import LoadingSpinner from '../../../components/LoadingSpinner'
-
-import VendorOrderDataRow from '../../../components/dashboard/tablerows/VendorOrderDataRow'
+import { useQuery } from "@tanstack/react-query";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import useAuth from "../../../hooks/useAuth";
+import LoadingSpinner from "../../../components/LoadingSpinner";
+import VendorOrderDataRow from "../../../components/dashboard/tablerows/VendorOrderDataRow";
+import { toast } from "react-toastify";
 
 const MyAddedTickets = () => {
-    const { user } = useAuth()
-    const axiosSecure = useAxiosSecure()
-    const { data: tickets = [], isLoading } = useQuery({
-        queryKey: ['my-added-tickets', user?.email],
+    const { user } = useAuth();
+    const axiosSecure = useAxiosSecure();
+
+    const { data: tickets = [], isLoading, refetch } = useQuery({
+        queryKey: ["my-added-tickets", user?.email],
         queryFn: async () => {
-            const res = await axiosSecure.get(`/my-added-tickets/${user?.email}`)
-            return res.data
+            if (!user?.email) return [];
+            const res = await axiosSecure.get(`/my-added-tickets/${user.email}`);
+            return res.data;
         },
         enabled: !!user?.email,
-    })
+    });
 
-    if (isLoading) return <LoadingSpinner />
+    const handleStatusChange = async (ticket, newStatus) => {
+        try {
+            await axiosSecure.patch(`/tickets/${ticket._id}/status`, { status: newStatus });
+            toast.success(`Status updated to ${newStatus}`);
+            refetch();
+        } catch (err) {
+            console.error(err);
+            toast.error("Failed to update status");
+        }
+    };
+
+    const handleDelete = async (ticketId) => {
+        try {
+            await axiosSecure.delete(`/tickets/${ticketId}`);
+            toast.success("Ticket deleted successfully");
+            refetch();
+        } catch (err) {
+            console.error(err);
+            toast.error("Failed to delete ticket");
+        }
+    };
+
+    if (isLoading) return <LoadingSpinner />;
 
     return (
         <div className="max-w-6xl mx-auto p-4 sm:p-8">
@@ -31,9 +55,6 @@ const MyAddedTickets = () => {
                         <tr>
                             <th className="px-5 py-3 text-white text-left text-sm uppercase font-semibold">
                                 Ticket Name
-                            </th>
-                            <th className="px-5 py-3 text-white text-left text-sm uppercase font-semibold">
-                                Category
                             </th>
                             <th className="px-5 py-3 text-white text-left text-sm uppercase font-semibold">
                                 Price
@@ -51,15 +72,18 @@ const MyAddedTickets = () => {
                     </thead>
                     <tbody>
                         {tickets.length > 0 ? (
-                            tickets.map(ticket => (
-                                <VendorOrderDataRow key={ticket._id} ticket={ticket} />
+                            tickets.map((ticket) => (
+                                <VendorOrderDataRow
+                                    key={ticket._id}
+                                    ticket={ticket}
+                                    type="ticket"
+                                    onStatusChange={handleStatusChange}
+                                    onDelete={handleDelete}
+                                />
                             ))
                         ) : (
                             <tr>
-                                <td
-                                    colSpan="6"
-                                    className="text-center py-8 text-[#240d0b] font-semibold"
-                                >
+                                <td colSpan="5" className="text-center py-8 text-[#240d0b] font-semibold">
                                     You have not added any tickets yet.
                                 </td>
                             </tr>
@@ -68,7 +92,7 @@ const MyAddedTickets = () => {
                 </table>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default MyAddedTickets
+export default MyAddedTickets;

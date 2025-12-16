@@ -13,6 +13,7 @@ const Statistics = () => {
     return (
         <div>
             {role === "user" && <UserStatistics />}
+
             {role === "vendor" && <VendorStatistics />}
             {role === "admin" && <AdminStatistics />}
         </div >

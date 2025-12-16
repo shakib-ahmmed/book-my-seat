@@ -17,24 +17,18 @@ const RevenueOverview = () => {
     const { user } = useAuth();
     const axiosSecure = useAxiosSecure();
 
-    const { data: inventory = [], isLoading } = useQuery({
-        queryKey: ['inventory', user?.email],
+    const { data, isLoading } = useQuery({
+        queryKey: ['revenue-overview', user?.email],
         queryFn: async () => {
-            const result = await axiosSecure.get(`/my-inventory/${user?.email}`);
-            return result.data;
+            const res = await axiosSecure.get(`/revenue-overview/${user?.email}`);
+            return res.data;
         },
         enabled: !!user?.email,
     });
 
     if (isLoading) return <LoadingSpinner />;
 
-    // Compute totals
-    const totalTicketsAdded = inventory.reduce((sum, item) => sum + item.quantity, 0);
-    const totalTicketsSold = inventory.reduce((sum, item) => sum + (item.sold || 0), 0);
-    const totalRevenue = inventory.reduce(
-        (sum, item) => sum + (item.sold || 0) * item.price,
-        0
-    );
+    const { totalTicketsAdded, totalTicketsSold, totalRevenue } = data;
 
     const chartData = [
         { name: 'Tickets Added', value: totalTicketsAdded, color: '#fddb1a' },
@@ -44,9 +38,7 @@ const RevenueOverview = () => {
 
     return (
         <div className="container mx-auto px-4 sm:px-8 py-8">
-            <h2 className="text-3xl font-bold  text-[#5b0809] mb-6">
-                Revenue Overview
-            </h2>
+            <h2 className="text-3xl font-bold text-[#5b0809] mb-6">Revenue Overview</h2>
             <div className="bg-[#b0bdc0]/20 p-6 rounded-xl shadow-lg">
                 <ResponsiveContainer width="100%" height={350}>
                     <BarChart
