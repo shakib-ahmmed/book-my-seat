@@ -5,7 +5,7 @@ import useAuth from './useAuth';
 
 
 const axiosInstance = axios.create({
-    baseURL: 'http://localhost:5000/',
+    baseURL: 'https://book-my-seat-server.vercel.app/',
     withCredentials: true,
 });
 
@@ -32,7 +32,7 @@ const useAxiosSecure = () => {
                         originalRequest._retry = true;
                         try {
                             const { data } = await axios.post(
-                                'http://localhost:5000/refresh-token',
+                                'https://book-my-seat-server.vercel.app/refresh-token',
                                 {},
                                 { withCredentials: true }
                             );

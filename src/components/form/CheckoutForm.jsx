@@ -12,7 +12,7 @@ const CheckoutForm = ({ ticket, quantity, onPaymentSuccess }) => {
         setLoading(true);
 
         try {
-            const { data } = await axios.post("http://localhost:5000/create-payment-intent", {
+            const { data } = await axios.post("https://book-my-seat-server.vercel.app/create-payment-intent", {
                 amount: ticket.price * quantity * 100,
             });
 

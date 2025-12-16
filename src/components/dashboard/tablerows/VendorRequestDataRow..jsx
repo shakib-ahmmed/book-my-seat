@@ -20,7 +20,6 @@ const VendorRequestDataRow = ({ request, refetch }) => {
 
     return (
         <tr className="bg-white hover:bg-gray-50 transition-all border-b border-gray-200">
-            {/* Email */}
             <td className="px-6 py-4 text-sm text-gray-800 font-medium">
                 {request?.email}
             </td>

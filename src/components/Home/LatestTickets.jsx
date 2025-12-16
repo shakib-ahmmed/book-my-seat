@@ -9,7 +9,7 @@ const LatestTickets = () => {
     useEffect(() => {
         const fetchTickets = async () => {
             try {
-                const res = await fetch("http://localhost:5000/tickets");
+                const res = await fetch("https://book-my-seat-server.vercel.app/tickets");
                 const data = await res.json();
 
                 if (Array.isArray(data)) setTickets(data);

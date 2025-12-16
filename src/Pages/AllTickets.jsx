@@ -27,7 +27,7 @@ const AllTickets = () => {
       setLoading(true);
       try {
         const res = await fetch(
-          `http://localhost:5000/tickets?search=${searchQuery}&sortBy=${sortBy}&order=${order}`
+          `https://book-my-seat-server.vercel.app/tickets?search=${searchQuery}&sortBy=${sortBy}&order=${order}`
         );
         const data = await res.json();
         setTickets(data);
@@ -122,7 +122,7 @@ const AllTickets = () => {
               ticket={selectedTicket}
               quantity={quantity}
               onPaymentSuccess={() => {
-                axios.post("http://localhost:5000/bookings", {
+                axios.post("https://book-my-seat-server.vercel.app/bookings", {
                   ticketId: selectedTicket._id,
                   quantity,
                   status: "Paid",

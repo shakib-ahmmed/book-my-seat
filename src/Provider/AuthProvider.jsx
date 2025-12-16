@@ -37,12 +37,12 @@ const AuthProvider = ({ children }) => {
 
     const resetPassword = (email) =>
         sendPasswordResetEmail(auth, email);
-    
+
     const updateUser = async (data) => {
         if (!auth.currentUser) return;
 
         await updateProfile(auth.currentUser, data);
-        await auth.currentUser.reload(); 
+        await auth.currentUser.reload();
 
         setUser({ ...auth.currentUser });
     };
@@ -55,12 +55,18 @@ const AuthProvider = ({ children }) => {
             if (currentUser?.email) {
                 try {
                     setRoleLoading(true);
+
+                    await axios.post("https://book-my-seat-server.vercel.app/users", {
+                        email: currentUser.email,
+                        name: currentUser.displayName,
+                    });
+
                     const res = await axios.get(
-                        `http://localhost:5000/user/role?email=${currentUser.email}`
+                        `https://book-my-seat-server.vercel.app/user/role?email=${currentUser.email}`
                     );
                     setRole(res.data.role || "user");
                 } catch (err) {
-                    console.error("Role fetch failed:", err);
+                    console.error("Role fetch/create failed:", err);
                     setRole("user");
                 } finally {
                     setRoleLoading(false);

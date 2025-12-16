@@ -58,7 +58,7 @@ const TicketDataRow = ({ ticket: booking, refetch }) => {
         <button
           onClick={async () => {
             try {
-              await fetch(`http://localhost:5000/bookings/${booking._id}`, {
+              await fetch(`https://book-my-seat-server.vercel.app/bookings/${booking._id}`, {
                 method: "DELETE",
               });
               refetch();

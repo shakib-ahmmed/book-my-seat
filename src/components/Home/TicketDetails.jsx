@@ -19,7 +19,7 @@ const TicketDetails = () => {
     useEffect(() => {
         const fetchTicket = async () => {
             try {
-                const res = await axios.get(`http://localhost:5000/tickets/${id}`);
+                const res = await axios.get(`https://book-my-seat-server.vercel.app/tickets/${id}`);
                 setTicket(res.data);
             } catch (err) {
                 console.error(err);
@@ -70,7 +70,7 @@ const TicketDetails = () => {
         }
 
         try {
-            const res = await axios.post("http://localhost:5000/bookings", {
+            const res = await axios.post("https://book-my-seat-server.vercel.app/bookings", {
                 ticketId: ticket._id,
                 quantity,
                 status: "Pending",

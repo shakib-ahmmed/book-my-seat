@@ -20,7 +20,6 @@ const AdminStatistics = () => {
     const axiosSecure = useAxiosSecure();
     const queryClient = useQueryClient();
 
-    /* ================= FETCH BOOKINGS ================= */
     const { data: bookings = [], isLoading } = useQuery({
         queryKey: ["allBookings"],
         queryFn: async () => {
@@ -29,7 +28,6 @@ const AdminStatistics = () => {
         },
     });
 
-    /* ================= UPDATE STATUS ================= */
     const updateStatusMutation = useMutation({
         mutationFn: async ({ id, status }) => {
             return axiosSecure.patch(`/bookings/${id}/status`, { status });
@@ -45,7 +43,6 @@ const AdminStatistics = () => {
 
     if (isLoading) return <LoadingSpinner />;
 
-    /* ================= STATS ================= */
     const totalBookings = bookings.length;
 
     const pending = bookings.filter(
@@ -65,14 +62,12 @@ const AdminStatistics = () => {
         return sum + b.quantity * price;
     }, 0);
 
-    /* ================= CHART DATA ================= */
     const chartData = [
         { name: "Pending", value: pending, color: "#fddb1a" },
         { name: "Approved", value: approved, color: "#4ade80" },
         { name: "Rejected", value: rejected, color: "#ba0c10" },
     ];
 
-    /* ================= UI ================= */
     return (
         <div className="max-w-7xl mx-auto px-4 py-8">
 
@@ -80,15 +75,12 @@ const AdminStatistics = () => {
                 Admin Dashboard
             </h2>
 
-            {/* ===== STAT CARDS ===== */}
             <div className="grid grid-cols-1 sm:grid-cols-4 gap-6 mb-10">
                 <StatCard title="Total Bookings" value={totalBookings} bg="#e9d44c" />
                 <StatCard title="Pending" value={pending} bg="#fddb1a" />
                 <StatCard title="Approved" value={approved} bg="#4ade80" />
                 <StatCard title="Rejected" value={rejected} bg="#ba0c10" />
             </div>
-
-            {/* ===== REVENUE ===== */}
             <div className="bg-[#b0bdc0] rounded-2xl p-6 shadow-lg mb-10 text-center">
                 <h3 className="text-2xl font-semibold text-[#240d0b] mb-2">
                     Total Revenue
@@ -98,7 +90,6 @@ const AdminStatistics = () => {
                 </p>
             </div>
 
-            {/* ===== CHART ===== */}
             <div className="bg-white rounded-2xl p-6 shadow-lg mb-10">
                 <h3 className="text-2xl font-semibold mb-5 text-[#240d0b]">
                     Booking Status Overview
@@ -119,61 +110,10 @@ const AdminStatistics = () => {
                 </ResponsiveContainer>
             </div>
 
-            {/* ===== PENDING BOOKINGS ===== */}
-            <h3 className="text-2xl font-bold mb-5 text-[#240d0b]">
-                Pending Bookings
-            </h3>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {bookings
-                    .filter((b) => normalize(b.status) === "pending")
-                    .map((b) => (
-                        <div
-                            key={b._id}
-                            className="bg-white rounded-2xl p-5 shadow flex flex-col justify-between"
-                        >
-                            <div>
-                                <p><b>User:</b> {b.email}</p>
-                                <p><b>Ticket:</b> {b?.ticket?.title || "N/A"}</p>
-                                <p><b>Quantity:</b> {b.quantity}</p>
-                                <p className="mb-3">
-                                    <b>Total:</b> {b.quantity * (b?.ticket?.price || 0)} BDT
-                                </p>
-                            </div>
-
-                            <div className="flex gap-2">
-                                <button
-                                    onClick={() =>
-                                        updateStatusMutation.mutate({
-                                            id: b._id,
-                                            status: "approved",
-                                        })
-                                    }
-                                    className="flex-1 bg-green-600 text-white py-2 rounded hover:bg-green-700"
-                                >
-                                    Approve
-                                </button>
-
-                                <button
-                                    onClick={() =>
-                                        updateStatusMutation.mutate({
-                                            id: b._id,
-                                            status: "rejected",
-                                        })
-                                    }
-                                    className="flex-1 bg-red-600 text-white py-2 rounded hover:bg-red-700"
-                                >
-                                    Reject
-                                </button>
-                            </div>
-                        </div>
-                    ))}
-            </div>
         </div>
     );
 };
 
-/* ================= STAT CARD ================= */
 const StatCard = ({ title, value, bg }) => (
     <div
         style={{ backgroundColor: bg }}

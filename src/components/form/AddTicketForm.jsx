@@ -56,7 +56,7 @@ const AddTicketForm = () => {
             };
 
             // Send ticket to backend
-            const ticketRes = await fetch("http://localhost:5000/tickets", {
+            const ticketRes = await fetch("https://book-my-seat-server.vercel.app/tickets", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(ticketData),
