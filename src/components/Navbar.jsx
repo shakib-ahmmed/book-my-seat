@@ -24,17 +24,14 @@ const Navbar = () => {
     return (
         <div>
             <div className="navbar bg-base-100 shadow-sm lg:px-20">
-
-
                 <div className="navbar-start flex items-center gap-2">
                     <NavLink to="/" className="flex items-center justify-center gap-2">
                         <img className="h-20 w-20" src="/logo.png" alt="BOOKMYSEAT" />
-                        <span className="font-bold text-2xl sm:text-3xl lg:text-4xl text-[#800f0f]">
+                        <span className="font-bold text-2xl sm:text-3xl lg:text-4xl text-[#800f0f] hidden lg:block">
                             BOOKMYSEAT
                         </span>
+
                     </NavLink>
-
-
                     <div className="dropdown lg:hidden">
                         <label tabIndex={0} className="btn btn-ghost">
                             <svg
@@ -51,25 +48,19 @@ const Navbar = () => {
                             tabIndex={0}
                             className="menu menu-sm dropdown-content text-2xl sm:text-3xl lg:text-4xl text-black mt-3 p-2 shadow bg-base-100 rounded-box w-52" >
 
-
                             <li><NavLink to="/">Home</NavLink></li>
                             {user && <li><NavLink to="/all-tickets">All Tickets</NavLink></li>}
-
                             {!user && <li><NavLink to="/auth/login">Login</NavLink></li>}
                             {!user && <li><NavLink to="/auth/registration">Register</NavLink></li>}
                         </ul>
                     </div>
                 </div>
-
-
                 <div className="navbar-center hidden lg:flex">
                     <ul className="menu menu-horizontal px-1 font-semibold">
                         <li><NavLink to="/">Home</NavLink></li>
                         {user && <li><NavLink to="/all-tickets">All Tickets</NavLink></li>}
                     </ul>
                 </div>
-
-
                 <div className="navbar-end relative">
                     {user ? (
                         <div className="relative">
@@ -86,31 +77,31 @@ const Navbar = () => {
                             </button>
 
                             {dropdownOpen && (
-                                <ul className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg overflow-hidden z-50">
+                                <ul className="absolute right-0 mt-2 w-48 cursor-pointer bg-white shadow-lg rounded-lg overflow-hidden z-50">
                                     <li>
-
                                         <NavLink
                                             to="/dashboard/profile"
                                             className="block px-4 py-2 hover:bg-[#f2d73c]"
                                             onClick={() => setDropdownOpen(false)}
                                         >
                                             My Profile
-
                                         </NavLink>
-                                        <li>
-                                            <NavLink
-                                                to="/dashboard"
-                                                className="block px-4 py-2 hover:bg-[#f2d73c]"
-                                                onClick={() => setDropdownOpen(false)}
-                                            >
-                                                Dashboard
-                                            </NavLink>
-                                        </li>
                                     </li>
+
+                                    <li>
+                                        <NavLink
+                                            to="/dashboard"
+                                            className="block px-4 py-2 hover:bg-[#f2d73c]"
+                                            onClick={() => setDropdownOpen(false)}
+                                        >
+                                            Dashboard
+                                        </NavLink>
+                                    </li>
+
                                     <li>
                                         <button
                                             onClick={handleLogOut}
-                                            className="w-full text-left px-4 py-2 hover:bg-[#800f0f]text-gray-800 hover:bg-[#f2d73c]"
+                                            className="w-full text-left px-4 py-2 hover:bg-[#f2d73c]"
                                         >
                                             Logout
                                         </button>

@@ -1,135 +1,98 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import useAxiosSecure from '../../../hooks/useAxiosSecure';
-import useAuth from '../../../hooks/useAuth';
-import LoadingSpinner from '../../../components/LoadingSpinner';
-import { toast } from 'react-toastify';
+import React from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import { toast } from "react-hot-toast";
 
 const ManageUsers = () => {
-    const { user } = useAuth();
     const axiosSecure = useAxiosSecure();
     const queryClient = useQueryClient();
 
+    // ================= FETCH USERS =================
     const { data: users = [], isLoading } = useQuery({
-        queryKey: ['users'],
+        queryKey: ["users"],
         queryFn: async () => {
-            const res = await axiosSecure.get('/users');
-            return res.data || [];
+            const res = await axiosSecure.get("/users");
+            return res.data;
         },
     });
 
-    const makeAdminMutation = useMutation({
-        mutationFn: async (userId) => {
-            const res = await axiosSecure.patch(`/users/${userId}/make-admin`);
+    // ================= MAKE ADMIN =================
+    const makeAdmin = useMutation({
+        mutationFn: async (id) => {
+            const res = await axiosSecure.patch(`/users/${id}/make-admin`);
             return res.data;
         },
         onSuccess: () => {
-            queryClient.invalidateQueries(['users']);
-            toast.success('User promoted to Admin!');
+            toast.success("User promoted to admin");
+            queryClient.invalidateQueries({ queryKey: ["users"] });
         },
-        onError: () => toast.error('Failed to make Admin'),
+        onError: (err) => {
+            toast.error(err?.response?.data?.message || "Failed to make admin");
+        },
     });
 
-    const makeVendorMutation = useMutation({
-        mutationFn: async (userId) => {
-            const res = await axiosSecure.patch(`/users/${userId}/make-vendor`);
+    // ================= MAKE VENDOR =================
+    const makeVendor = useMutation({
+        mutationFn: async (id) => {
+            const res = await axiosSecure.patch(`/users/${id}/make-vendor`);
             return res.data;
         },
         onSuccess: () => {
-            queryClient.invalidateQueries(['users']);
-            toast.success('User promoted to Vendor!');
+            toast.success("User promoted to vendor");
+            queryClient.invalidateQueries({ queryKey: ["users"] });
         },
-        onError: () => toast.error('Failed to make Vendor'),
+        onError: (err) => {
+            toast.error(err?.response?.data?.message || "Failed to make vendor");
+        },
     });
 
-    const markFraudMutation = useMutation({
-        mutationFn: async (userId) => {
-            const res = await axiosSecure.patch(`/users/${userId}/mark-fraud`);
-            return res.data;
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries(['users']);
-            toast.success('Vendor marked as fraud!');
-        },
-        onError: () => toast.error('Failed to mark fraud'),
-    });
-
-    if (isLoading) return <LoadingSpinner />;
+    if (isLoading) return <p className="text-center mt-10">Loading users...</p>;
 
     return (
-        <div className="max-w-6xl mx-auto p-4 sm:p-8">
-            <h2 className="text-3xl sm:text-4xl font-bold text-[#240d0b] mb-6">
-                Manage Users
-            </h2>
+        <div className="overflow-x-auto w-full">
+            <table className="table w-full">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
 
-            <div className="overflow-x-auto">
-                <table className="min-w-full bg-[#b0bdc0] rounded-2xl shadow-lg overflow-hidden">
-                    <thead className="bg-[#ba0c10]">
-                        <tr>
-                            <th className="px-6 py-3 text-white text-left text-sm font-semibold uppercase">
-                                Name
-                            </th>
-                            <th className="px-6 py-3 text-white text-left text-sm font-semibold uppercase">
-                                Email
-                            </th>
-                            <th className="px-6 py-3 text-white text-left text-sm font-semibold uppercase">
-                                Role
-                            </th>
-                            <th className="px-6 py-3 text-white text-left text-sm font-semibold uppercase">
-                                Actions
-                            </th>
+                <tbody>
+                    {users.map((user, index) => (
+                        <tr key={user._id}>
+                            <th>{index + 1}</th>
+                            <td>{user.name || "N/A"}</td>
+                            <td>{user.email}</td>
+                            <td className="capitalize font-semibold">
+                                {user.role || "user"}
+                            </td>
+                            <td className="space-x-2">
+                                {user.role !== "admin" && (
+                                    <button
+                                        onClick={() => makeAdmin.mutate(user._id)}
+                                        className="btn btn-sm btn-primary"
+                                    >
+                                        Make Admin
+                                    </button>
+                                )}
+
+                                {user.role !== "vendor" && (
+                                    <button
+                                        onClick={() => makeVendor.mutate(user._id)}
+                                        className="btn btn-sm btn-success"
+                                    >
+                                        Make Vendor
+                                    </button>
+                                )}
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        {users.length > 0 ? (
-                            users.map((u) => (
-                                <tr
-                                    key={u._id}
-                                    className="border-b transition-colors"
-                                >
-                                    <td className="px-6 py-4 text-[#240d0b] font-semibold">{u.name}</td>
-                                    <td className="px-6 py-4 text-[#240d0b]">{u.email}</td>
-                                    <td className="px-6 py-4 text-[#240d0b]">{u.role}</td>
-                                    <td className="px-6 py-4 space-x-2">
-                                        {u.role !== 'admin' && (
-                                            <button
-                                                onClick={() => makeAdminMutation.mutate(u._id)}
-                                                className="px-3 py-1 bg-[#e9d44c] text-[#240d0b] rounded hover:bg-[#fddb1a] font-semibold cursor-pointer"
-                                            >
-                                                Make Admin
-                                            </button>
-                                        )}
-                                        {u.role !== 'vendor' && (
-                                            <button
-                                                onClick={() => makeVendorMutation.mutate(u._id)}
-                                                className="px-3 py-1 bg-[#e9d44c] text-[#240d0b] rounded hover:bg-[#fddb1a] font-semibold cursor-pointer"
-                                            >
-                                                Make Vendor
-                                            </button>
-                                        )}
-                                        {u.role === 'vendor' && (
-                                            <button
-                                                onClick={() => markFraudMutation.mutate(u._id)}
-                                                className="px-3 py-1 bg-[#5b0809] text-white rounded hover:bg-[#7e0304] font-semibold cursor-pointer"
-                                            >
-                                                Mark as Fraud
-                                            </button>
-                                        )}
-                                    </td>
-                                </tr>
-                            ))
-                        ) : (
-                            <tr>
-                                <td
-                                    colSpan="4"
-                                    className="text-center py-8 text-[#240d0b] font-semibold"
-                                >
-                                    No users found.
-                                </td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-            </div>
+                    ))}
+                </tbody>
+            </table>
         </div>
     );
 };

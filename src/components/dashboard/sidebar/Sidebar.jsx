@@ -28,7 +28,7 @@ const Sidebar = () => {
 
             <div className="md:hidden flex items-center justify-between bg-white shadow-md px-4 py-3">
                 <Link to="/">
-                    <img src="../../../../public/logo.png" alt="logo" className="w-24 h-auto" />
+                    <img src="../../../../public/icon.png" alt="logo" className="w-24 h-auto" />
                 </Link>
 
                 <button

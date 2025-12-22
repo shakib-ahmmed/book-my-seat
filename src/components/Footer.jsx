@@ -53,7 +53,7 @@ const Footer = () => {
                         <h3 className="font-semibold pt-25 text-lg mb-3">Payment Methods</h3>
                         <div className="flex items-center gap-4">
                             <img
-                                src="/stripe.png"
+                                src="/public/stripe.jpg"
                                 alt="Stripe"
                                 className="h-8 w-auto"
                             />

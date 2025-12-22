@@ -43,7 +43,9 @@ const LatestTickets = () => {
 
             <div className="grid grid-cols-1 xl:gap-4 justify-cente  lg:m-15" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))" }}>
                 {latestTickets.map(ticket => (
-                    <TicketCard key={ticket._id} ticket={ticket} />
+                    <TicketCard
+                        key={ticket._id}
+                        ticket={ticket} />
                 ))}
             </div>
         </div>
