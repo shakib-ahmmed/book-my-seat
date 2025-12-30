@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Bus } from "lucide-react";
+import logo from "../../src/assets/icon.png";
 
 const Footer = () => {
     return (
@@ -11,7 +11,8 @@ const Footer = () => {
                     {/* Column 1 */}
                     <div className="flex flex-col  gap-3">
                         <div className="flex  items-center gap-2">
-                            <img src="/public/icon.png" alt="icon" />
+                            <img src={logo}
+                                alt="logo" />
                         </div>
                         <p className="text-black text-sm m:text-m xl:text-lg">
                             Book bus, train, launch, and flight tickets quickly and easily. Manage your bookings in one place with BOOKMYSEAT.

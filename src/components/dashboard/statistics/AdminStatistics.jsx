@@ -11,7 +11,7 @@ import {
     CartesianGrid,
     Tooltip,
     ResponsiveContainer,
-    Cell
+    Cell,
 } from "recharts";
 
 const normalize = (status) => status?.toLowerCase();
@@ -21,9 +21,9 @@ const AdminStatistics = () => {
     const queryClient = useQueryClient();
 
     const { data: bookings = [], isLoading } = useQuery({
-        queryKey: ["allBookings"],
+        queryKey: ["adminBookings"],
         queryFn: async () => {
-            const res = await axiosSecure.get("/bookings");
+            const res = await axiosSecure.get("/admin/bookings");
             return res.data || [];
         },
     });
@@ -33,7 +33,7 @@ const AdminStatistics = () => {
             return axiosSecure.patch(`/bookings/${id}/status`, { status });
         },
         onSuccess: () => {
-            queryClient.invalidateQueries(["allBookings"]);
+            queryClient.invalidateQueries(["adminBookings"]);
             Swal.fire("Success", "Booking status updated", "success");
         },
         onError: () => {
@@ -59,7 +59,7 @@ const AdminStatistics = () => {
 
     const totalRevenue = bookings.reduce((sum, b) => {
         const price = b?.ticket?.price || 0;
-        return sum + b.quantity * price;
+        return sum + (b.quantity || 0) * price;
     }, 0);
 
     const chartData = [
@@ -70,7 +70,6 @@ const AdminStatistics = () => {
 
     return (
         <div className="max-w-7xl mx-auto px-4 py-8">
-
             <h2 className="text-4xl font-bold text-[#240d0b] mb-8">
                 Admin Dashboard
             </h2>
@@ -81,6 +80,7 @@ const AdminStatistics = () => {
                 <StatCard title="Approved" value={approved} bg="#4ade80" />
                 <StatCard title="Rejected" value={rejected} bg="#ba0c10" />
             </div>
+
             <div className="bg-[#b0bdc0] rounded-2xl p-6 shadow-lg mb-10 text-center">
                 <h3 className="text-2xl font-semibold text-[#240d0b] mb-2">
                     Total Revenue
@@ -109,7 +109,6 @@ const AdminStatistics = () => {
                     </BarChart>
                 </ResponsiveContainer>
             </div>
-
         </div>
     );
 };

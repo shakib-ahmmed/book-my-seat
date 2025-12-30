@@ -1,29 +1,31 @@
-import { useEffect, useState } from 'react';
-import toast from 'react-hot-toast';
-import useAxiosSecure from '../../../hooks/useAxiosSecure';
-import LoadingSpinner from '../../../components/LoadingSpinner';
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import useAuth from "../../../hooks/useAuth";
+import LoadingSpinner from "../../../components/LoadingSpinner";
 
-const TransactionHistory = ({ userEmail }) => {
+const TransactionHistory = () => {
+  const { user } = useAuth(); 
   const axiosSecure = useAxiosSecure();
+
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!user?.email) return;
+
     const fetchTransactions = async () => {
       try {
         setLoading(true);
-        const url = userEmail ? `/transactions?email=${userEmail}` : '/transactions';
-        const res = await axiosSecure.get(url);
 
-        if (!Array.isArray(res.data)) {
-          console.warn("Unexpected transactions data:", res.data);
-          setTransactions([]);
-        } else {
-          setTransactions(res.data);
-        }
+        const res = await axiosSecure.get(
+          `/transactions?email=${user.email}`
+        );
+
+        setTransactions(Array.isArray(res.data) ? res.data : []);
       } catch (err) {
         console.error(err);
-        toast.error(err?.response?.data?.message || 'Failed to fetch transactions');
+        toast.error("Failed to fetch transactions");
         setTransactions([]);
       } finally {
         setLoading(false);
@@ -31,13 +33,13 @@ const TransactionHistory = ({ userEmail }) => {
     };
 
     fetchTransactions();
-  }, [axiosSecure, userEmail]);
+  }, [axiosSecure, user?.email]);
 
   if (loading) return <LoadingSpinner />;
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-md min-h-[70vh]">
-      <h2 className="text-2xl font-bold mb-4">Transaction History</h2>
+      <h2 className="text-2xl font-bold mb-4">My Transaction History</h2>
 
       {transactions.length === 0 ? (
         <p className="text-gray-500">No transactions found.</p>
@@ -48,23 +50,21 @@ const TransactionHistory = ({ userEmail }) => {
               <tr>
                 <th className="px-4 py-2 border">Transaction ID</th>
                 <th className="px-4 py-2 border">Amount</th>
-                <th className="px-4 py-2 border">Ticket Title</th>
-                <th className="px-4 py-2 border">Payment Date</th>
+                <th className="px-4 py-2 border">Ticket</th>
+                <th className="px-4 py-2 border">Date</th>
                 <th className="px-4 py-2 border">Status</th>
               </tr>
             </thead>
             <tbody>
               {transactions.map((tx) => (
-                <tr key={tx.id} className="hover:bg-yellow-100">
-                  <td className="px-4 py-2 border">{tx.id || "N/A"}</td>
-                  <td className="px-4 py-2 border">৳{tx.amount?.toFixed(2) || 0}</td>
-                  <td className="px-4 py-2 border">{tx.ticketTitle || "Unknown Ticket"}</td>
+                <tr key={tx.id}>
+                  <td className="px-4 py-2 border">{tx.id}</td>
+                  <td className="px-4 py-2 border">৳{tx.amount}</td>
+                  <td className="px-4 py-2 border">{tx.ticketTitle}</td>
                   <td className="px-4 py-2 border">
-                    {tx.paymentDate
-                      ? new Date(tx.paymentDate).toLocaleString()
-                      : "N/A"}
+                    {new Date(tx.paymentDate).toLocaleString()}
                   </td>
-                  <td className="px-4 py-2 border">{tx.status || "pending"}</td>
+                  <td className="px-4 py-2 border capitalize">{tx.status}</td>
                 </tr>
               ))}
             </tbody>

@@ -1,13 +1,15 @@
-import { Navigate } from 'react-router'
-import LoadingSpinner from '../components/LoadingSpinner'
-import useRole from '../hooks/useRole'
+import { Navigate } from "react-router-dom";
+import LoadingSpinner from "../components/LoadingSpinner";
+import useRole from "../hooks/useRole";
 
 const VendorRoute = ({ children }) => {
-    const { role, isRoleLoading } = useRole();
+    const [role, isRoleLoading] = useRole();
 
-    if (isRoleLoading) return <LoadingSpinner />
-    if (role === 'vendor') return children
-    return <Navigate to='/' replace='true' />
-}
+    if (isRoleLoading) return <LoadingSpinner />;
+
+    if (role === "vendor") return children;
+
+    return <Navigate to="/" replace />;
+};
 
 export default VendorRoute;
