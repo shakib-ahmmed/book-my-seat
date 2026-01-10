@@ -27,6 +27,7 @@ import TicketDetails from "../components/Home/TicketDetails.jsx";
 import RequestedBookings from "../pages/dashboard/vendor/RequestedBookings.jsx";
 import AdvertiseTickets from "../pages/dashboard/admin/AdvertiseTickets.jsx";
 import ManagTickets from "../pages/dashboard/admin/ManageTickets.jsx";
+import Contact from "../pages/Contact.jsx";
 
 
 
@@ -49,6 +50,10 @@ const router = createBrowserRouter([
       {
         path: "ticket-details/:id",
         element: <TicketDetails />
+      },
+      {
+        path: "/contact",
+        element: <Contact />
       },
     ],
   },
