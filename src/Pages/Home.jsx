@@ -3,6 +3,7 @@ import HeroSection from '../components/Home/HeroSection';
 
 import HomeAdvertisedTickets from '../components/Home/HomeAdvertisedTickets';
 import LatestTickets from '../components/Home/LatestTickets';
+import Categories from '../components/Home/Categories';
 
 
 
@@ -19,6 +20,9 @@ const Home = () => {
 
             <div>
                 <LatestTickets />
+            </div>
+            <div>
+                <Categories />
             </div>
         </div>
     );
