@@ -46,37 +46,36 @@ const AllTickets = () => {
     [loading, hasMore]
   );
 
-  // Fetch tickets
+  // Fetch tickets with filters, search, sorting
   useEffect(() => {
     const fetchTickets = async () => {
       setLoading(true);
-
-      // Map priceRange to minPrice and maxPrice
-      let minPrice = 0,
-        maxPrice = 999999;
-      switch (priceRange) {
-        case "0-50":
-          minPrice = 0;
-          maxPrice = 50;
-          break;
-        case "51-100":
-          minPrice = 51;
-          maxPrice = 100;
-          break;
-        case "101-200":
-          minPrice = 101;
-          maxPrice = 200;
-          break;
-        case "201+":
-          minPrice = 201;
-          maxPrice = 999999;
-          break;
-        default:
-          minPrice = 0;
-          maxPrice = 999999;
-      }
-
       try {
+        // Map priceRange to minPrice/maxPrice
+        let minPrice = 0,
+          maxPrice = 999999;
+        switch (priceRange) {
+          case "0-50":
+            minPrice = 0;
+            maxPrice = 500;
+            break;
+          case "51-100":
+            minPrice = 501;
+            maxPrice = 1000;
+            break;
+          case "101-200":
+            minPrice = 1001;
+            maxPrice = 2000;
+            break;
+          case "201+":
+            minPrice = 2001;
+            maxPrice = 999999;
+            break;
+          default:
+            minPrice = 0;
+            maxPrice = 999999;
+        }
+
         const queryParams = new URLSearchParams({
           search: searchQuery,
           category,
@@ -93,7 +92,12 @@ const AllTickets = () => {
         );
         const data = await res.json();
 
-        const ticketsData = Array.isArray(data) ? data : data?.tickets || [];
+        let ticketsData = [];
+        if (Array.isArray(data)) {
+          ticketsData = data;
+        } else if (data && Array.isArray(data.tickets)) {
+          ticketsData = data.tickets;
+        }
 
         if (page === 1) {
           setTickets(ticketsData);
@@ -107,7 +111,6 @@ const AllTickets = () => {
         setTickets([]);
         setHasMore(false);
       }
-
       setLoading(false);
     };
 
@@ -119,16 +122,10 @@ const AllTickets = () => {
     setSearchQuery(search);
   };
 
-  const openBookingModal = (ticket) => {
-    setSelectedTicket(ticket);
-    setQuantity(1);
-    setModalOpen(true);
-  };
-
-  const handleFilterChange = (filterType, value) => {
+  const handleFilterChange = (type, value) => {
     setPage(1);
-    if (filterType === "category") setCategory(value);
-    if (filterType === "price") setPriceRange(value);
+    if (type === "category") setCategory(value);
+    if (type === "price") setPriceRange(value);
   };
 
   const clearFilters = () => {
@@ -139,22 +136,15 @@ const AllTickets = () => {
     setPage(1);
   };
 
-  // Dark/Light theme styles
-  const isDark = document.documentElement.getAttribute("data-theme") === "dark";
-
-  const inputClass =
-    "border rounded-lg px-3 py-1.5 text-sm " +
-    (isDark ? "bg-[#3a2d2d] border-gray-600 text-white" : "bg-white border-gray-300 text-gray-800");
-
-  const labelClass = isDark ? "text-gray-200 text-sm font-medium" : "text-gray-700 text-sm font-medium";
-
-  const btnClass =
-    "btn font-semibold px-4 py-1.5 rounded-lg hover:scale-105 transition ease-in-out " +
-    (isDark ? "bg-[#5C0809] text-white" : "bg-[#5C0809] text-white");
+  const openBookingModal = (ticket) => {
+    setSelectedTicket(ticket);
+    setQuantity(1);
+    setModalOpen(true);
+  };
 
   return (
     <div className="lg:w-10/12 mx-auto py-10">
-      <h1 className={`text-3xl font-bold mb-6 text-center ${isDark ? "text-white" : "text-black"}`}>
+      <h1 className="text-3xl font-bold mb-6 text-center text-gray-800 dark:text-white">
         {searchQuery ? `Search: ${searchQuery}` : "All Tickets"}
       </h1>
 
@@ -167,20 +157,22 @@ const AllTickets = () => {
             placeholder="Search by ticket title..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className={inputClass}
+            className="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-1.5 w-full text-sm bg-white dark:bg-[#3a2d2d] text-gray-800 dark:text-white"
           />
-          <button onClick={handleSearch} className={btnClass}>
+          <button
+            onClick={handleSearch}
+            className="btn bg-[#5C0809] text-white font-semibold px-4 hover:scale-105 transition ease-in-out flex items-center justify-center py-1.5 rounded-lg"
+          >
             Search
           </button>
         </div>
 
         {/* Filters */}
         <div className="flex items-center gap-2 flex-wrap">
-          {/* Category */}
           <select
             value={category}
             onChange={(e) => handleFilterChange("category", e.target.value)}
-            className={inputClass}
+            className="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-1.5 text-sm bg-white dark:bg-[#3a2d2d] text-gray-800 dark:text-white"
           >
             <option value="">All Categories</option>
             <option value="concert">Bus</option>
@@ -188,11 +180,10 @@ const AllTickets = () => {
             <option value="sport">Plane</option>
           </select>
 
-          {/* Price */}
           <select
             value={priceRange}
             onChange={(e) => handleFilterChange("price", e.target.value)}
-            className={inputClass}
+            className="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-1.5 text-sm bg-white dark:bg-[#3a2d2d] text-gray-800 dark:text-white"
           >
             <option value="all">All Prices</option>
             <option value="0-50">0 - 500</option>
@@ -201,7 +192,7 @@ const AllTickets = () => {
             <option value="201+">2001+</option>
           </select>
 
-          <label className={labelClass}>Sort by:</label>
+          <label className="text-sm font-medium text-gray-700 dark:text-gray-200">Sort by:</label>
 
           <select
             value={sortBy}
@@ -209,7 +200,7 @@ const AllTickets = () => {
               setSortBy(e.target.value);
               setPage(1);
             }}
-            className={inputClass}
+            className="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-1.5 text-sm bg-white dark:bg-[#3a2d2d] text-gray-800 dark:text-white"
           >
             <option value="price">Price</option>
             <option value="departure">Departure Date</option>
@@ -220,10 +211,7 @@ const AllTickets = () => {
               setOrder(order === "asc" ? "desc" : "asc");
               setPage(1);
             }}
-            className={
-              "flex items-center justify-center py-1.5 px-2 rounded-lg transition ease-in-out " +
-              (isDark ? "bg-gray-700 text-white hover:bg-[#5C0809]" : "bg-gray-200 text-gray-800 hover:bg-[#5C0809] hover:text-white")
-            }
+            className="bg-gray-200 dark:bg-gray-700 hover:bg-[#5C0809] hover:scale-105 hover:text-white transition ease-in-out flex items-center justify-center py-1.5 px-2 rounded-lg text-gray-800 dark:text-white"
           >
             {order === "asc" ? "↑ Asc" : "↓ Desc"}
           </button>
@@ -231,10 +219,7 @@ const AllTickets = () => {
           {(category || priceRange !== "all" || searchQuery) && (
             <button
               onClick={clearFilters}
-              className={
-                "px-3 py-1 rounded-lg text-sm transition " +
-                (isDark ? "bg-gray-700 text-white hover:bg-gray-600" : "bg-gray-300 text-gray-800 hover:bg-gray-400")
-              }
+              className="bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 transition px-3 py-1 rounded-lg text-sm text-gray-800 dark:text-white"
             >
               Clear Filters
             </button>
@@ -242,16 +227,9 @@ const AllTickets = () => {
         </div>
       </div>
 
-      {/* Active Filters */}
-      <div className="flex flex-wrap gap-2 mb-4">
-        {category && <span className="bg-yellow-200 text-yellow-900 px-2 py-1 rounded-full text-sm">Category: {category}</span>}
-        {priceRange !== "all" && <span className="bg-yellow-200 text-yellow-900 px-2 py-1 rounded-full text-sm">Price: {priceRange}</span>}
-        {searchQuery && <span className="bg-yellow-200 text-yellow-900 px-2 py-1 rounded-full text-sm">Search: {searchQuery}</span>}
-      </div>
-
       {/* Tickets Grid */}
       {tickets.length === 0 && !loading ? (
-        <p className={isDark ? "text-white text-center" : "text-gray-500 text-center"}>No tickets found.</p>
+        <p className="text-gray-500 dark:text-gray-300 text-center mt-6">No tickets found.</p>
       ) : (
         <div className="grid grid-cols-1 py-4 px-6 lg:py-0 lg:px-0 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {tickets.map((ticket, index) => {
@@ -262,7 +240,13 @@ const AllTickets = () => {
                 </div>
               );
             } else {
-              return <TicketCard key={ticket._id || index} ticket={ticket} onClick={() => openBookingModal(ticket)} />;
+              return (
+                <TicketCard
+                  key={ticket._id || index}
+                  ticket={ticket}
+                  onClick={() => openBookingModal(ticket)}
+                />
+              );
             }
           })}
         </div>
@@ -272,7 +256,12 @@ const AllTickets = () => {
 
       {/* Booking Modal */}
       {modalOpen && selectedTicket && (
-        <BookingModal ticket={selectedTicket} quantity={quantity} setQuantity={setQuantity} onClose={() => setModalOpen(false)}>
+        <BookingModal
+          ticket={selectedTicket}
+          quantity={quantity}
+          setQuantity={setQuantity}
+          onClose={() => setModalOpen(false)}
+        >
           <Elements stripe={stripePromise}>
             <CheckoutForm
               ticket={selectedTicket}
@@ -287,7 +276,11 @@ const AllTickets = () => {
                   })
                   .then(() => {
                     setTickets((prev) =>
-                      prev.map((t) => (t._id === selectedTicket._id ? { ...t, quantity: (t.quantity || 0) - quantity } : t))
+                      prev.map((t) =>
+                        t._id === selectedTicket._id
+                          ? { ...t, quantity: (t.quantity || 0) - quantity }
+                          : t
+                      )
                     );
                     setModalOpen(false);
                     alert("Booking successful!");
