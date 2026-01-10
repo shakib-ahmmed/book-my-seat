@@ -43,30 +43,35 @@ const Login = () => {
     };
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-base-100">
-            <div className="card w-full max-w-sm shadow-2xl rounded-xl bg-base-100">
-                <h2 className="text-center font-semibold text-2xl py-4" style={{ color: '#FDDB1A' }}>
+        <div className="flex justify-center items-center min-h-screen bg-base-200 dark:bg-[#1e1b1b]">
+            {/* Card */}
+            <div className="card w-full max-w-sm shadow-2xl rounded-xl border border-[#660103] bg-base-100 dark:bg-[#2c2424]">
+
+                {/* Heading */}
+                <h2 className="text-center font-semibold text-2xl py-4 text-[#FDDB1A]">
                     Login Your Account
                 </h2>
 
                 <form onSubmit={handleLogin} className="card-body">
-                    <label className="label text-white">Email</label>
+                    {/* Email */}
+                    <label className="label text-black dark:text-white">Email</label>
                     <input
                         type="email"
                         name="email"
                         placeholder="Email"
                         required
-                        className="input input-bordered w-full bg-[#3a2d2d] border-gray-600 text-white focus:border-[#FDDB1A] focus:ring-[#FDDB1A]"
+                        className="input input-bordered w-full bg-base-200 dark:bg-[#3a2d2d] text-black dark:text-white focus:border-[#FDDB1A] focus:ring-[#FDDB1A]"
                     />
 
-                    <label className="label text-white">Password</label>
+                    {/* Password */}
+                    <label className="label text-black dark:text-white">Password</label>
                     <div className="relative">
                         <input
                             type={showPassword ? "text" : "password"}
                             name="password"
                             placeholder="Password"
                             required
-                            className="input input-bordered w-full pr-10 bg-[#3a2d2d] border-gray-600 text-white focus:border-[#FDDB1A] focus:ring-[#FDDB1A]"
+                            className="input input-bordered w-full pr-10 bg-base-200 dark:bg-[#3a2d2d] text-black dark:text-white focus:border-[#FDDB1A] focus:ring-[#FDDB1A]"
                         />
                         <button
                             type="button"
@@ -77,6 +82,7 @@ const Login = () => {
                         </button>
                     </div>
 
+                    {/* Login button */}
                     <button
                         type="submit"
                         className="btn mt-4 w-full"
@@ -85,6 +91,7 @@ const Login = () => {
                         Login
                     </button>
 
+                    {/* Google login */}
                     <button
                         type="button"
                         onClick={handleGoogleLogin}
@@ -95,14 +102,20 @@ const Login = () => {
                         Login with Google
                     </button>
 
-                    <p className="font-semibold text-center pt-5 text-white">
+                    {/* Register link */}
+                    <p className="font-semibold text-center pt-5 text-black dark:text-white">
                         Don't have an account?{' '}
-                        <Link to="/auth/registration" className="ml-1" style={{ color: '#FDDB1A', textDecoration: 'underline' }}>
+                        <Link
+                            to="/auth/registration"
+                            className="ml-1"
+                            style={{ color: '#FDDB1A', textDecoration: 'underline' }}
+                        >
                             Register
                         </Link>
                     </p>
                 </form>
             </div>
+
             <ToastContainer position="top-center" />
         </div>
     );
