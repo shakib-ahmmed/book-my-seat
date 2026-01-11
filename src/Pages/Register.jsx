@@ -71,7 +71,7 @@ const Register = () => {
         <div className="flex justify-center items-center min-h-screen bg-base-200 transition-colors">
             <div className="card bg-base-100 w-full max-w-sm shadow-2xl border border-[#660103]">
 
-                <h2 className="text-center font-semibold text-2xl py-4 text-[#FDDB1A]">
+                <h2 className="text-center font-semibold text-2xl py-4 text-[#070706]">
                     Register Your Account
                 </h2>
 
