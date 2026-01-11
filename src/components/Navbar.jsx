@@ -1,6 +1,6 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { NavLink, Link, useLocation } from "react-router-dom";
-import { UserIcon, Sun, Moon, Monitor, Menu, X } from "lucide-react";
+import { UserIcon, Sun, Moon, Menu, X } from "lucide-react";
 import { toast } from "react-toastify";
 import { AuthContext } from "../provider/AuthContext";
 
@@ -8,40 +8,51 @@ const Navbar = () => {
   const { user, logOut, loading } = useContext(AuthContext);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [theme, setTheme] = useState("light");
   const location = useLocation();
 
-  /* ---------------- THEME LOGIC ---------------- */
-
+  // ------------------ THEME LOGIC ------------------
   const applyTheme = (mode) => {
-    localStorage.setItem("theme", mode);
+    let finalTheme = mode;
 
     if (mode === "system") {
       const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
-    } else {
-      document.documentElement.setAttribute("data-theme", mode);
+      finalTheme = isDark ? "dark" : "light";
     }
+
+    document.documentElement.setAttribute("data-theme", finalTheme);
+    document.documentElement.style.colorScheme = finalTheme;
+    localStorage.setItem("theme", mode);
+    setTheme(finalTheme);
   };
 
-  // Sync theme across tabs
+  useEffect(() => {
+    const stored = localStorage.getItem("theme") || "light";
+    applyTheme(stored);
+
+
+    if (stored === "system") {
+      const media = window.matchMedia("(prefers-color-scheme: dark)");
+      const listener = (e) => applyTheme("system");
+      media.addEventListener("change", listener);
+      return () => media.removeEventListener("change", listener);
+    }
+  }, []);
+
+
   useEffect(() => {
     const syncTheme = (e) => {
-      if (e.key === "theme") {
-        applyTheme(e.newValue || "light");
-      }
+      if (e.key === "theme") applyTheme(e.newValue || "light");
     };
     window.addEventListener("storage", syncTheme);
     return () => window.removeEventListener("storage", syncTheme);
   }, []);
 
-  /* ---------------- UX FIXES ---------------- */
-
-  // Close mobile menu on route change
+  e
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [location.pathname]);
 
-  // Close user dropdown on logout
   useEffect(() => {
     if (!user) setDropdownOpen(false);
   }, [user]);
@@ -70,9 +81,16 @@ const Navbar = () => {
     </>
   );
 
+  const getThemeIcon = () => {
+    if (localStorage.getItem("theme") === "system") {
+      return window.matchMedia("(prefers-color-scheme: dark)").matches ? <Moon size={20} /> : <Sun size={20} />;
+    }
+    return theme === "dark" ? <Moon size={20} /> : <Sun size={20} />;
+  };
+
   return (
-    <div className="sticky top-0 z-50 bg-base-100 transition-colors duration-300">
-      <div className="navbar shadow-sm lg:px-20">
+    <div className="sticky top-0 z-50 bg-base-100 transition-colors duration-300 shadow-sm">
+      <div className="navbar lg:px-20">
 
         {/* LEFT */}
         <div className="navbar-start gap-2">
@@ -84,7 +102,7 @@ const Navbar = () => {
           </NavLink>
         </div>
 
-        {/* CENTER (DESKTOP) */}
+        {/* CENTER DESKTOP */}
         <div className="navbar-center hidden lg:flex">
           <ul className="menu menu-horizontal px-1 font-semibold gap-4">
             {commonRoutes}
@@ -95,10 +113,10 @@ const Navbar = () => {
         {/* RIGHT */}
         <div className="navbar-end gap-3 relative">
 
-          {/* THEME SWITCH (3 MODE) */}
+          {/* THEME SWITCH */}
           <div className="dropdown dropdown-end">
             <button className="btn btn-ghost btn-circle" title="Theme">
-              <Sun size={20} />
+              {getThemeIcon()}
             </button>
             <ul className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-36">
               <li>
@@ -113,7 +131,7 @@ const Navbar = () => {
               </li>
               <li>
                 <button onClick={() => applyTheme("system")} className="gap-2">
-                  <Monitor size={16} /> System
+                  System
                 </button>
               </li>
             </ul>

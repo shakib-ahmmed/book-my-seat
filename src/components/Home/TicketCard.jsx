@@ -17,18 +17,16 @@ const TicketCard = ({ ticket }) => {
 
     return (
         <div
-            className="group bg-white dark:bg-[#3A0E0E] rounded-xl border border-gray-200 dark:border-gray-700
-                       shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300
-                       w-full h-[450px] flex flex-col overflow-hidden"
+            className="group bg-base-100 dark:bg-base-200 border border-base-300 dark:border-base-400 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 w-full h-[420px] flex flex-col overflow-hidden"
         >
             {/* Image */}
-            <div className="relative h-48 w-full overflow-hidden rounded-t-xl">
+            <div className="relative h-40 w-full overflow-hidden rounded-t-xl">
                 <img
                     src={image}
                     alt={title}
                     className="h-full w-full object-cover group-hover:scale-105 transition duration-300"
                 />
-                <span className="absolute top-2 left-2 bg-black/70 text-white text-xs px-2 py-0.5 rounded-full">
+                <span className="absolute top-2 left-2 bg-black/70 dark:bg-white/20 text-white dark:text-black text-xs px-2 py-0.5 rounded-full">
                     {transportType}
                 </span>
             </div>
@@ -36,34 +34,33 @@ const TicketCard = ({ ticket }) => {
             {/* Content */}
             <div className="p-4 flex flex-col flex-1 justify-between">
                 <div className="space-y-2">
-                    {/* Title */}
-                    <h2 className="text-lg font-semibold text-gray-800 dark:text-[#FDDB1A] line-clamp-2">
+                    <h2 className="text-md font-semibold text-base-content dark:text-base-content line-clamp-2">
                         {title}
                     </h2>
 
-                    {/* From → To */}
-                    <p className="text-sm text-gray-500 dark:text-gray-300">
+                    <p className="text-xs text-base-content/70 dark:text-base-content/70">
                         {from} → {to}
                     </p>
 
-                    {/* Meta Info */}
-                    <div className="flex items-center justify-between text-sm font-medium">
-                        <span className="text-gray-600 dark:text-gray-300">Qty: {quantity}</span>
-                        <span className="text-green-600 dark:text-green-400 font-bold">৳{price}</span>
+                    <div className="flex items-center justify-between text-xs font-medium">
+                        <span className="text-base-content/70 dark:text-base-content/70">
+                            Qty: {quantity}
+                        </span>
+                        <span className="text-green-600 dark:text-green-400 text-lg font-bold">
+                            ৳{price}
+                        </span>
                     </div>
 
-                    {/* Perks */}
                     {perks?.length > 0 && (
-                        <ul className="text-sm text-gray-500 dark:text-gray-300 list-disc ml-4">
+                        <ul className="text-xs text-base-content/70 dark:text-base-content/70 list-disc ml-4">
                             {perks.slice(0, 2).map((perk, idx) => (
                                 <li key={idx}>{perk}</li>
                             ))}
                         </ul>
                     )}
 
-                    {/* Departure */}
-                    <p className="text-xs text-gray-400 dark:text-gray-300">
-                        Departure: {new Date(departure).toLocaleString()}
+                    <p className="text-xs text-base-content/50 dark:text-base-content/50">
+                        {new Date(departure).toLocaleString()}
                     </p>
                 </div>
 

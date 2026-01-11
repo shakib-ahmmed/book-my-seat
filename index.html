@@ -7,7 +7,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BOOKMYSEAT</title>
 
-  <!-- Theme Loader (NO FLASH) -->
   <script>
     (function () {
       const validThemes = ["light", "dark", "system"];
@@ -15,20 +14,23 @@
 
       if (!validThemes.includes(theme)) theme = "light";
 
+      const root = document.documentElement;
+
+      const applyDarkClass = (t) => {
+        if (t === "dark") root.classList.add("dark");
+        else root.classList.remove("dark");
+      };
+
       if (theme === "system") {
         const media = window.matchMedia("(prefers-color-scheme: dark)");
-        const applyTheme = () =>
-          document.documentElement.setAttribute("data-theme", media.matches ? "dark" : "light");
-
+        const applyTheme = () => applyDarkClass(media.matches);
         applyTheme();
         media.addEventListener("change", () => {
           if (localStorage.getItem("theme") === "system") applyTheme();
         });
       } else {
-        document.documentElement.setAttribute("data-theme", theme);
+        applyDarkClass(theme);
       }
-
-      document.documentElement.style.colorScheme = theme;
     })();
   </script>
 </head>
