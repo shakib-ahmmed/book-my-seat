@@ -8,14 +8,40 @@ const testimonials = [
 
 const Testimonials = () => {
     return (
-        <section className="py-16 px-4 md:px-12 bg-[#111] text-white text-center">
-            <h2 className="text-3xl font-bold mb-8">What Our Customers Say</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {testimonials.map(t => (
-                    <div key={t.id} className="bg-[#222] dark:bg-gray-800 p-6 rounded-xl shadow hover:scale-105 transition">
-                        <p className="mb-4">"{t.comment}"</p>
-                        <p className="font-bold">{t.user}</p>
-                        <p>⭐ {t.rating}/5</p>
+        <section className="py-24 px-4 md:px-12 w-full bg-base-100 dark:bg-base-200 transition-colors duration-500">
+            <h2 className="text-5xl font-extrabold text-center mb-16 text-black dark:text-[#FDDB1A]">
+                What Our Customers Say
+            </h2>
+
+            <div className="flex flex-col md:flex-row justify-center items-stretch gap-8 max-w-7xl mx-auto">
+                {testimonials.map((t, idx) => (
+                    <div
+                        key={t.id}
+                        className="relative flex-1 bg-white dark:bg-[#2C2C2C] p-10 rounded-3xl
+              shadow-md dark:shadow-gray-700 hover:shadow-xl transition-transform duration-500
+              transform hover:-translate-y-2 cursor-pointer flex flex-col items-center text-center"
+                    >
+                        {/* Quote icon */}
+                        <div className="text-yellow-400 text-4xl mb-4">❝</div>
+
+                        {/* Comment */}
+                        <p className="text-gray-700 dark:text-gray-300 text-lg mb-6">{t.comment}</p>
+
+                        {/* User */}
+                        <p className="font-semibold text-black dark:text-white text-xl mb-4">{t.user}</p>
+
+                        {/* Stars with staggered pulse */}
+                        <div className="flex gap-1">
+                            {Array.from({ length: t.rating }).map((_, i) => (
+                                <span
+                                    key={i}
+                                    className="text-yellow-400 text-2xl font-bold animate-pulse bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-500"
+                                    style={{ animationDelay: `${i * 0.1}s` }}
+                                >
+                                    ⭐
+                                </span>
+                            ))}
+                        </div>
                     </div>
                 ))}
             </div>

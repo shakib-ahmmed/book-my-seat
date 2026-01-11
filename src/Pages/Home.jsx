@@ -40,15 +40,17 @@ const Home = () => {
         <PopularRoutes />
       </div>
 
+      {/* Testimonials */}
+      <div className="transition-colors duration-500">
+        <Testimonials />
+      </div>
+
+
       {/* How It Works */}
       <div className="transition-colors duration-500">
         <HowItWorks />
       </div>
 
-      {/* Testimonials */}
-      <div className="transition-colors duration-500">
-        <Testimonials />
-      </div>
 
       {/* Stats */}
       <div className="transition-colors duration-500">
