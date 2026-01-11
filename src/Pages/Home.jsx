@@ -15,18 +15,65 @@ import CTA from "../components/Home/CTA";
 const Home = () => {
   return (
     <div className="bg-white dark:bg-[#1B1B1B] text-black dark:text-white transition-colors duration-500">
-      <HeroSection />
-      <HomeAdvertisedTickets />
-      <LatestTickets />
-      <Categories />
-      <PopularRoutes />
-      <HowItWorks />
-      <Testimonials />
-      <Stats />
-      <Blog />
-      <Newsletter />
-      <FAQ />
-      <CTA />
+      {/* Hero Section */}
+      <div className="transition-colors duration-500">
+        <HeroSection />
+      </div>
+
+      {/* Advertised Tickets */}
+      <div className="transition-colors duration-500">
+        <HomeAdvertisedTickets />
+      </div>
+
+      {/* Latest Tickets */}
+      <div className="transition-colors duration-500">
+        <LatestTickets />
+      </div>
+
+      {/* Categories */}
+      <div className="transition-colors duration-500">
+        <Categories />
+      </div>
+
+      {/* Popular Routes */}
+      <div className="transition-colors duration-500">
+        <PopularRoutes />
+      </div>
+
+      {/* How It Works */}
+      <div className="transition-colors duration-500">
+        <HowItWorks />
+      </div>
+
+      {/* Testimonials */}
+      <div className="transition-colors duration-500">
+        <Testimonials />
+      </div>
+
+      {/* Stats */}
+      <div className="transition-colors duration-500">
+        <Stats />
+      </div>
+
+      {/* Blog */}
+      <div className="transition-colors duration-500">
+        <Blog />
+      </div>
+
+      {/* Newsletter */}
+      <div className="transition-colors duration-500">
+        <Newsletter />
+      </div>
+
+      {/* FAQ */}
+      <div className="transition-colors duration-500">
+        <FAQ />
+      </div>
+
+      {/* Call To Action */}
+      <div className="transition-colors duration-500">
+        <CTA />
+      </div>
     </div>
   );
 };

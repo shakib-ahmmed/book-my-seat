@@ -22,15 +22,16 @@ const Navbar = () => {
 
     document.documentElement.setAttribute("data-theme", finalTheme);
     document.documentElement.style.colorScheme = finalTheme;
-    localStorage.setItem("theme", mode);
+    localStorage.setItem("theme", mode); // store original choice (light/dark/system)
     setTheme(finalTheme);
   };
 
+  // Initialize theme on mount
   useEffect(() => {
     const stored = localStorage.getItem("theme") || "light";
     applyTheme(stored);
 
-
+    // Listen for system theme changes if "system" mode
     if (stored === "system") {
       const media = window.matchMedia("(prefers-color-scheme: dark)");
       const listener = (e) => applyTheme("system");
@@ -39,7 +40,7 @@ const Navbar = () => {
     }
   }, []);
 
-
+  // Sync theme across tabs
   useEffect(() => {
     const syncTheme = (e) => {
       if (e.key === "theme") applyTheme(e.newValue || "light");
@@ -48,11 +49,12 @@ const Navbar = () => {
     return () => window.removeEventListener("storage", syncTheme);
   }, []);
 
-  e
+  // Close mobile menu on route change
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [location.pathname]);
 
+  // Close dropdown on logout
   useEffect(() => {
     if (!user) setDropdownOpen(false);
   }, [user]);
@@ -81,6 +83,7 @@ const Navbar = () => {
     </>
   );
 
+  // Determine icon for current theme
   const getThemeIcon = () => {
     if (localStorage.getItem("theme") === "system") {
       return window.matchMedia("(prefers-color-scheme: dark)").matches ? <Moon size={20} /> : <Sun size={20} />;
