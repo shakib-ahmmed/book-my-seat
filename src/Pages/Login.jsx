@@ -1,16 +1,16 @@
-import React, { useState, useContext } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import React, { useState, useContext } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../provider/AuthContext";
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from "react-toastify";
 import { FcGoogle } from "react-icons/fc";
 
 const Login = () => {
     const { signIn, googleSignIn } = useContext(AuthContext);
     const [showPassword, setShowPassword] = useState(false);
+
     const navigate = useNavigate();
     const location = useLocation();
-    const from = location.state?.from?.pathname || '/';
+    const from = location.state?.from?.pathname || "/";
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -43,80 +43,71 @@ const Login = () => {
     };
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-base-200 dark:bg-[#1e1b1b]">
-            {/* Card */}
-            <div className="card w-full max-w-sm shadow-2xl rounded-xl border border-[#660103] bg-base-100 dark:bg-[#2c2424]">
+        <div className="flex justify-center items-center min-h-screen bg-base-200 transition-colors">
+            <div className="card w-full max-w-sm shadow-2xl rounded-xl border border-[#660103] bg-base-100">
 
-                {/* Heading */}
                 <h2 className="text-center font-semibold text-2xl py-4 text-[#FDDB1A]">
                     Login Your Account
                 </h2>
 
                 <form onSubmit={handleLogin} className="card-body">
-                    {/* Email */}
-                    <label className="label text-black dark:text-white">Email</label>
+                    <label className="label text-base-content">Email</label>
                     <input
                         type="email"
                         name="email"
                         placeholder="Email"
                         required
-                        className="input input-bordered w-full bg-base-200 dark:bg-[#3a2d2d] text-black dark:text-white focus:border-[#FDDB1A] focus:ring-[#FDDB1A]"
+                        className="input input-bordered w-full bg-base-200 text-base-content focus:border-[#FDDB1A]"
                     />
 
-                    {/* Password */}
-                    <label className="label text-black dark:text-white">Password</label>
+                    <label className="label text-base-content">Password</label>
                     <div className="relative">
                         <input
                             type={showPassword ? "text" : "password"}
                             name="password"
                             placeholder="Password"
                             required
-                            className="input input-bordered w-full pr-10 bg-base-200 dark:bg-[#3a2d2d] text-black dark:text-white focus:border-[#FDDB1A] focus:ring-[#FDDB1A]"
+                            className="input input-bordered w-full pr-10 bg-base-200 text-base-content focus:border-[#FDDB1A]"
                         />
                         <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                            className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-400"
                         >
                             {showPassword ? "Hide" : "Show"}
                         </button>
                     </div>
 
-                    {/* Login button */}
                     <button
                         type="submit"
-                        className="btn mt-4 w-full"
-                        style={{ backgroundColor: '#660103', color: 'white' }}
+                        className="btn mt-4 w-full text-white"
+                        style={{ backgroundColor: "#660103" }}
                     >
                         Login
                     </button>
 
-                    {/* Google login */}
                     <button
                         type="button"
                         onClick={handleGoogleLogin}
                         className="btn btn-outline w-full mt-2 flex items-center justify-center gap-2"
-                        style={{ borderColor: '#660103', color: 'white' }}
+                        style={{ borderColor: "#660103", color: "#660103" }}
                     >
                         <FcGoogle size={20} />
                         Login with Google
                     </button>
 
-                    {/* Register link */}
-                    <p className="font-semibold text-center pt-5 text-black dark:text-white">
-                        Don't have an account?{' '}
+                    <p className="font-semibold text-center pt-5 text-base-content">
+                        Don&apos;t have an account?
                         <Link
                             to="/auth/registration"
-                            className="ml-1"
-                            style={{ color: '#FDDB1A', textDecoration: 'underline' }}
+                            className="ml-1 underline"
+                            style={{ color: "#FDDB1A" }}
                         >
                             Register
                         </Link>
                     </p>
                 </form>
             </div>
-
-            <ToastContainer position="top-center" />
         </div>
     );
 };

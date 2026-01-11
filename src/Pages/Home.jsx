@@ -13,22 +13,22 @@ import FAQ from "../components/Home/FAQ";
 import CTA from "../components/Home/CTA";
 
 const Home = () => {
-    return (
-        <div className="bg-white dark:bg-[#1B1B1B] text-black dark:text-white transition-colors duration-500">
-            <HeroSection />
-            <HomeAdvertisedTickets />
-            <LatestTickets />
-            <Categories />
-            <PopularRoutes />
-            <HowItWorks />
-            <Testimonials />
-            <Stats />
-            <Blog />
-            <Newsletter />
-            <FAQ />
-            <CTA />
-        </div>
-    );
+  return (
+    <div className="bg-white dark:bg-[#1B1B1B] text-black dark:text-white transition-colors duration-500">
+      <HeroSection />
+      <HomeAdvertisedTickets />
+      <LatestTickets />
+      <Categories />
+      <PopularRoutes />
+      <HowItWorks />
+      <Testimonials />
+      <Stats />
+      <Blog />
+      <Newsletter />
+      <FAQ />
+      <CTA />
+    </div>
+  );
 };
 
 export default Home;

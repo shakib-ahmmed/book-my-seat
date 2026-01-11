@@ -1,12 +1,36 @@
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang="en">
 
 <head>
   <meta charset="UTF-8" />
   <link rel="icon" type="image/png" href="/logo.png" />
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BOOKMYSEAT</title>
+
+  <!-- Theme Loader (NO FLASH) -->
+  <script>
+    (function () {
+      const validThemes = ["light", "dark", "system"];
+      let theme = localStorage.getItem("theme");
+
+      if (!validThemes.includes(theme)) theme = "light";
+
+      if (theme === "system") {
+        const media = window.matchMedia("(prefers-color-scheme: dark)");
+        const applyTheme = () =>
+          document.documentElement.setAttribute("data-theme", media.matches ? "dark" : "light");
+
+        applyTheme();
+        media.addEventListener("change", () => {
+          if (localStorage.getItem("theme") === "system") applyTheme();
+        });
+      } else {
+        document.documentElement.setAttribute("data-theme", theme);
+      }
+
+      document.documentElement.style.colorScheme = theme;
+    })();
+  </script>
 </head>
 
 <body>

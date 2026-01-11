@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import TicketCard from "../components/Home/TicketCard";
-import axios from "axios";
-import { Elements } from "@stripe/react-stripe-js";
 import LoadingSpinner from "../components/LoadingSpinner";
-import CheckoutForm from "../components/form/CheckoutForm";
 import BookingModal from "../components/model/BookingModal";
+import CheckoutForm from "../components/form/CheckoutForm";
+import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
+import axios from "axios";
 
 const stripePromise = loadStripe("YOUR_STRIPE_KEY_HERE");
 
@@ -14,25 +14,22 @@ const AllTickets = () => {
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState("price");
-  const [order, setOrder] = useState("asc");
 
-  // Filters
   const [category, setCategory] = useState("");
   const [priceRange, setPriceRange] = useState("all");
 
-  // Pagination / infinite scroll
+  const [sortBy, setSortBy] = useState("price");
+  const [order, setOrder] = useState("asc");
+
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
-  // Modal
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [quantity, setQuantity] = useState(1);
 
   const observer = useRef();
-
-  const lastTicketElementRef = useCallback(
+  const lastTicketRef = useCallback(
     (node) => {
       if (loading) return;
       if (observer.current) observer.current.disconnect();
@@ -46,70 +43,53 @@ const AllTickets = () => {
     [loading, hasMore]
   );
 
-  // Fetch tickets with filters, search, sorting
+  // Convert priceRange to min/max
+  const getPriceRange = () => {
+    switch (priceRange) {
+      case "0-50":
+        return { minPrice: 0, maxPrice: 500 };
+      case "51-100":
+        return { minPrice: 501, maxPrice: 1000 };
+      case "101-200":
+        return { minPrice: 1001, maxPrice: 2000 };
+      case "201+":
+        return { minPrice: 2001, maxPrice: undefined };
+      default:
+        return { minPrice: undefined, maxPrice: undefined };
+    }
+  };
+
+  // Fetch tickets
   useEffect(() => {
     const fetchTickets = async () => {
       setLoading(true);
       try {
-        // Map priceRange to minPrice/maxPrice
-        let minPrice = 0,
-          maxPrice = 999999;
-        switch (priceRange) {
-          case "0-50":
-            minPrice = 0;
-            maxPrice = 500;
-            break;
-          case "51-100":
-            minPrice = 501;
-            maxPrice = 1000;
-            break;
-          case "101-200":
-            minPrice = 1001;
-            maxPrice = 2000;
-            break;
-          case "201+":
-            minPrice = 2001;
-            maxPrice = 999999;
-            break;
-          default:
-            minPrice = 0;
-            maxPrice = 999999;
-        }
+        const { minPrice, maxPrice } = getPriceRange();
 
-        const queryParams = new URLSearchParams({
+        const params = new URLSearchParams({
           search: searchQuery,
           category,
-          minPrice,
-          maxPrice,
           sortBy,
           order,
           page,
           limit: 8,
-        }).toString();
+        });
+
+        if (minPrice !== undefined) params.append("minPrice", minPrice);
+        if (maxPrice !== undefined) params.append("maxPrice", maxPrice);
 
         const res = await fetch(
-          `https://book-my-seat-server.vercel.app/tickets?${queryParams}`
+          `https://book-my-seat-server.vercel.app/tickets?${params.toString()}`
         );
         const data = await res.json();
+        const ticketsData = Array.isArray(data) ? data : data.tickets || [];
 
-        let ticketsData = [];
-        if (Array.isArray(data)) {
-          ticketsData = data;
-        } else if (data && Array.isArray(data.tickets)) {
-          ticketsData = data.tickets;
-        }
-
-        if (page === 1) {
-          setTickets(ticketsData);
-        } else {
-          setTickets((prev) => [...prev, ...ticketsData]);
-        }
+        if (page === 1) setTickets(ticketsData);
+        else setTickets((prev) => [...prev, ...ticketsData]);
 
         setHasMore(ticketsData.length === 8);
       } catch (err) {
-        console.error("Failed to fetch tickets:", err);
-        setTickets([]);
-        setHasMore(false);
+        console.error(err);
       }
       setLoading(false);
     };
@@ -144,7 +124,7 @@ const AllTickets = () => {
 
   return (
     <div className="lg:w-10/12 mx-auto py-10">
-      <h1 className="text-3xl font-bold mb-6 text-center text-gray-800 dark:text-white">
+      <h1 className="text-3xl font-bold mb-6 text-center">
         {searchQuery ? `Search: ${searchQuery}` : "All Tickets"}
       </h1>
 
@@ -157,33 +137,35 @@ const AllTickets = () => {
             placeholder="Search by ticket title..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-1.5 w-full text-sm bg-white dark:bg-[#3a2d2d] text-gray-800 dark:text-white"
+            className="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-1.5 w-full text-sm text-black dark:text-white bg-white dark:bg-[#1f1f1f] placeholder-gray-500 dark:placeholder-gray-400"
           />
           <button
             onClick={handleSearch}
-            className="btn bg-[#5C0809] text-white font-semibold px-4 hover:scale-105 transition ease-in-out flex items-center justify-center py-1.5 rounded-lg"
+            className="bg-[#5C0809] text-white font-semibold px-4 hover:scale-105 transition ease-in-out flex items-center justify-center py-1.5 rounded-lg"
           >
             Search
           </button>
         </div>
 
         {/* Filters */}
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center pb-7 gap-2 flex-wrap">
+          {/* Category */}
           <select
             value={category}
             onChange={(e) => handleFilterChange("category", e.target.value)}
-            className="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-1.5 text-sm bg-white dark:bg-[#3a2d2d] text-gray-800 dark:text-white"
+            className="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-1.5 text-sm text-black dark:text-white bg-white dark:bg-[#1f1f1f]"
           >
             <option value="">All Categories</option>
-            <option value="concert">Bus</option>
-            <option value="theater">Train</option>
-            <option value="sport">Plane</option>
+            <option value="Bus">Bus</option>
+            <option value="Train">Train</option>
+            <option value="Plane">Plane</option>
           </select>
 
+          {/* Price Range */}
           <select
             value={priceRange}
             onChange={(e) => handleFilterChange("price", e.target.value)}
-            className="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-1.5 text-sm bg-white dark:bg-[#3a2d2d] text-gray-800 dark:text-white"
+            className="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-1.5 text-sm text-black dark:text-white bg-white dark:bg-[#1f1f1f]"
           >
             <option value="all">All Prices</option>
             <option value="0-50">0 - 500</option>
@@ -192,34 +174,38 @@ const AllTickets = () => {
             <option value="201+">2001+</option>
           </select>
 
-          <label className="text-sm font-medium text-gray-700 dark:text-gray-200">Sort by:</label>
+          {/* Sort Label */}
+          <label className="text-sm font-medium text-black dark:text-white">Sort by:</label>
 
+          {/* Sort */}
           <select
             value={sortBy}
             onChange={(e) => {
               setSortBy(e.target.value);
               setPage(1);
             }}
-            className="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-1.5 text-sm bg-white dark:bg-[#3a2d2d] text-gray-800 dark:text-white"
+            className="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-1.5 text-sm text-black dark:text-white bg-white dark:bg-[#1f1f1f]"
           >
             <option value="price">Price</option>
             <option value="departure">Departure Date</option>
           </select>
 
+          {/* Order Button */}
           <button
             onClick={() => {
               setOrder(order === "asc" ? "desc" : "asc");
               setPage(1);
             }}
-            className="bg-gray-200 dark:bg-gray-700 hover:bg-[#5C0809] hover:scale-105 hover:text-white transition ease-in-out flex items-center justify-center py-1.5 px-2 rounded-lg text-gray-800 dark:text-white"
+            className="bg-gray-200 dark:bg-gray-700 hover:bg-[#5C0809] hover:scale-105 hover:text-white transition ease-in-out flex items-center justify-center py-1.5 px-2 rounded-lg text-black dark:text-white"
           >
             {order === "asc" ? "↑ Asc" : "↓ Desc"}
           </button>
 
+          {/* Clear Filters */}
           {(category || priceRange !== "all" || searchQuery) && (
             <button
               onClick={clearFilters}
-              className="bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 transition px-3 py-1 rounded-lg text-sm text-gray-800 dark:text-white"
+              className="bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 transition px-3 py-1 rounded-lg text-sm text-black dark:text-white"
             >
               Clear Filters
             </button>
@@ -227,27 +213,27 @@ const AllTickets = () => {
         </div>
       </div>
 
+
       {/* Tickets Grid */}
       {tickets.length === 0 && !loading ? (
-        <p className="text-gray-500 dark:text-gray-300 text-center mt-6">No tickets found.</p>
+        <p className="text-gray-500 text-center dark:text-gray-300">No tickets found.</p>
       ) : (
         <div className="grid grid-cols-1 py-4 px-6 lg:py-0 lg:px-0 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {tickets.map((ticket, index) => {
             if (tickets.length === index + 1) {
               return (
-                <div ref={lastTicketElementRef} key={ticket._id || index}>
+                <div ref={lastTicketRef} key={ticket._id || index}>
                   <TicketCard ticket={ticket} onClick={() => openBookingModal(ticket)} />
                 </div>
               );
-            } else {
-              return (
-                <TicketCard
-                  key={ticket._id || index}
-                  ticket={ticket}
-                  onClick={() => openBookingModal(ticket)}
-                />
-              );
             }
+            return (
+              <TicketCard
+                key={ticket._id || index}
+                ticket={ticket}
+                onClick={() => openBookingModal(ticket)}
+              />
+            );
           })}
         </div>
       )}
